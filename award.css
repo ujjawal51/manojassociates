@@ -24,6 +24,17 @@
   backdrop-filter: blur(10px);
 }
 
+/* Override style.css white text rule because awards page has a white header by default in light mode */
+body:not([data-theme="dark"]) .header:not(.scrolled) .nav-links a:not(.nav-btn),
+body:not([data-theme="dark"]) .header:not(.scrolled) .logo-name,
+body:not([data-theme="dark"]) .header:not(.scrolled) .logo-sub,
+body:not([data-theme="dark"]) .header:not(.scrolled) .nav-dropdown-trigger,
+body:not([data-theme="dark"]) .header:not(.scrolled) .nav-chevron,
+body:not([data-theme="dark"]) .header:not(.scrolled) .mobile-menu-btn i,
+body:not([data-theme="dark"]) .header:not(.scrolled) .theme-toggle-btn i {
+  color: #1A365D !important;
+}
+
 
 [data-theme="dark"] .header:not(.scrolled) .logo-name,
 [data-theme="dark"] .header:not(.scrolled) .mobile-menu-btn i {

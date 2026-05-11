@@ -254,11 +254,9 @@ img {
 ========================================== */
 .stats-counter {
   position: relative;
-  background-image: url('https://images.unsplash.com/photo-1541888082470-fa4ca4515aff?q=80&w=1920&auto=format&fit=crop');
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-color: #F29948;
+  background-attachment: unset;
+  background-image: none;
   padding: 100px 0;
   color: #fff;
 }
@@ -269,8 +267,7 @@ img {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(46, 62, 48, 0.85);
-  /* Primary color overlay */
+  background-color: transparent;
   z-index: 1;
 }
 
@@ -291,7 +288,7 @@ img {
 
 .stat-icon {
   font-size: 3rem;
-  color: var(--accent-color);
+  color: #ffffff;
   margin-bottom: 20px;
 }
 
@@ -412,28 +409,37 @@ h6 {
 /* ==========================================
    Header / Navbar / Top Banner
 ========================================== */
-.top-banner {
-  background-color: var(--bg-darker);
-  color: var(--text-highlight);
-  text-align: center;
-  font-size: 0.75rem;
-  letter-spacing: 2px;
-  padding: 8px 0;
-  text-transform: uppercase;
-  font-weight: 600;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
+.top-banner { display: none; }
 
 .header {
-  position: absolute;
-  top: 34px;
-  /* below top banner */
+  position: fixed;
+  top: 0;
   left: 0;
   width: 100%;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: none;
   z-index: 1000;
-  transition: var(--transition);
+  background: transparent;
+  transition: background 0.4s ease, box-shadow 0.4s ease;
 }
+
+/* On hero — all nav text must be white */
+.header:not(.scrolled) .nav-links a:not(.nav-btn),
+.header:not(.scrolled) .theme-toggle-btn i,
+.header:not(.scrolled) .mobile-menu-btn i,
+.header:not(.scrolled) .logo-name,
+.header:not(.scrolled) .logo-sub {
+  color: #ffffff !important;
+}
+
+.header:not(.scrolled) .nav-links a.active,
+.header:not(.scrolled) .nav-links a:hover {
+  color: #F29948 !important;
+}
+
+.header:not(.scrolled) .nav-links a::after {
+  background-color: rgba(255,255,255,0.6) !important;
+}
+
 
 .header.scrolled {
   position: fixed;
@@ -451,7 +457,8 @@ h6 {
 .header.scrolled .mobile-menu-btn i,
 .header.scrolled .logo-name,
 .header.scrolled .logo-sub {
-  color: #FFFFFF !important;
+  /* color: #FFFFFF !important; */
+  color: #B1B7C1;
 }
 
 .header.scrolled .nav-links a.active,
@@ -718,26 +725,155 @@ h6 {
 /* ==========================================
    Hero Split Layout Section
 ========================================== */
-.hero-split {
-  min-height: calc(100vh - 34px);
+/* ==========================================
+   J. Kumar Style Full-Screen Hero
+========================================== */
+.hero-jkumar {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+}
+
+/* ── Background Slides ── */
+.hjk-slides {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hjk-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center center;
+  opacity: 0;
+  transition: opacity 1.4s ease-in-out;
+  /* GPU acceleration for sharp rendering */
+  will-change: opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
+}
+
+.hjk-slide.active {
+  opacity: 1;
+}
+
+/* ── Overlay (light — so images stay clear) ── */
+.hjk-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.08) 0%,
+    rgba(0,0,0,0.05) 40%,
+    rgba(0,0,0,0.35) 80%,
+    rgba(0,0,0,0.55) 100%
+  );
+}
+
+/* ── Bottom Category Nav ── */
+.hjk-cat-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+}
+
+.hjk-cat-line {
+  height: 1px;
+  background: rgba(255,255,255,0.25);
+  width: 100%;
+}
+
+.hjk-cat-inner {
   display: flex;
-  flex-wrap: wrap;
-  padding-top: 124px;
-  /* Header height + banner height */
+  align-items: stretch;
+  justify-content: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
 }
 
-.hero-left {
-  flex: 1;
-  min-width: 50%;
-  display: flex;
-  align-items: center;
-  padding: 60px 5% 60px 8%;
+.hjk-cat {
+  background: none;
+  border: none;
+  border-left: 3px solid transparent;
+  color: rgba(255,255,255,0.65);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 22px 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  position: relative;
+  font-family: 'Inter', sans-serif;
 }
 
-.hero-content {
-  max-width: 650px;
+.hjk-cat::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: transparent;
+  transition: background 0.3s ease;
 }
 
+.hjk-cat.active,
+.hjk-cat:hover {
+  color: #F29948;
+}
+
+.hjk-cat.active::after {
+  background: #F29948;
+}
+
+.hjk-cat:hover::after {
+  background: rgba(242,153,72,0.5);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .hero-jkumar {
+    height: 60vh;
+    min-height: 450px;
+  }
+  
+  /* On mobile, make the logo text and hamburger menu dark blue so it's visible on bright hero images */
+  .header:not(.scrolled) .mobile-menu-btn i,
+  .header:not(.scrolled) .theme-toggle-btn i,
+  .header:not(.scrolled) .logo-name,
+  .header:not(.scrolled) .logo-sub {
+    color: #1A365D !important;
+  }
+
+  .hjk-cat-inner {
+    padding: 0 10px;
+    overflow-x: auto;
+    justify-content: flex-start;
+    gap: 0;
+
+    scrollbar-width: none;
+  }
+  .hjk-cat-inner::-webkit-scrollbar { display: none; }
+  .hjk-cat {
+    padding: 18px 16px;
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+  }
+}
+
+/* Legacy classes kept for compatibility */
+.hero-content { max-width: 650px; }
 .hero-title {
   color: var(--text-highlight);
   font-size: clamp(2.5rem, 8vw, 6rem);
@@ -747,62 +883,72 @@ h6 {
   margin-bottom: 25px;
   letter-spacing: -1px;
 }
+.hero-title .highlight { color: #9fb36d; font-family: 'Marcellus', serif; }
+.hero-subtitle { color: var(--text-main); font-size: 1.15rem; margin-bottom: 50px; max-width: 550px; line-height: 1.7; }
+.hero-image-pane { flex: 1; min-height: 400px; width: 100%; position: relative; overflow: hidden; }
 
-.hero-title .highlight {
-  /* color: var(--text-highlight); */
-  /* color: #c9d6b9; */
-  color: #9fb36d;
-  text-shadow: none;
-  /* font-size: 148px; */
-  font-family: 'Marcellus', serif;
-}
 
-.hero-subtitle {
-  color: var(--text-main);
-  font-size: 1.15rem;
-  margin-bottom: 50px;
-  max-width: 550px;
-  line-height: 1.7;
-}
-
-.hero-actions {
-  display: flex;
-  gap: 20px;
-}
-
-.hero-right {
-  flex: 1;
-  min-width: 50%;
-  display: flex;
-  flex-direction: column;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.hero-image-pane {
-  flex: 1;
-  min-height: 400px;
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-}
-
+/* ── Ken Burns + Crossfade Slider ── */
 .hero-slider-track {
   width: 100%;
   height: 100%;
   position: absolute;
   top: 0;
   left: 0;
-  display: flex;
-  transition: transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+  /* No flex needed — slides are stacked via absolute positioning */
 }
 
 .hero-slide {
-  flex: 0 0 100%;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  position: relative;
-  /* Removal of absolute positioning to facilitate sliding track */
+  opacity: 0;
+  transition: opacity 1.4s ease-in-out;
+}
+
+.hero-slide.active {
+  opacity: 1;
+}
+
+/* ── Slide Caption ── */
+.hero-slide-caption {
+  position: absolute;
+  bottom: 60px;
+  left: 24px;
+  z-index: 6;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.7s ease 0.5s, transform 0.7s ease 0.5s;
+  pointer-events: none;
+}
+
+.hero-slide-caption.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.caption-tag {
+  display: inline-block;
+  background: rgba(242, 153, 72, 0.85);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 2px;
+  margin-bottom: 6px;
+}
+
+.caption-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+  line-height: 1.2;
 }
 
 .hero-slider-dots {
@@ -2486,10 +2632,7 @@ h6 {
   transition: color 0.3s ease;
 }
 
-.footer-dev-credit:hover {
-  /* color: #ffffff; */
-   color: #EF7433;
-}
+ 
 
 @media (max-width: 1200px) {
   .footer-grid {
@@ -2719,29 +2862,40 @@ h6 {
 
   .nav-links {
     position: fixed;
-    top: 70px;
-    left: -100%;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: calc(100vh - 70px);
+    height: 100vh;
+    padding-top: 100px; /* Leave space for header */
     background-color: var(--bg-main);
     flex-direction: column;
     align-items: flex-start;
-    /* LEFT align for dropdown to work */
-    padding: 28px 24px 40px;
+    padding-left: 24px;
+    padding-right: 24px;
     gap: 6px;
-    transition: var(--transition);
     box-shadow: var(--shadow-md);
-    z-index: 1001;
+    z-index: 999; /* Below header so it slides from under */
     overflow-y: auto;
+    /* Dropdown animation from top */
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.4s ease, visibility 0.4s;
   }
 
-  /* Force visible black text on mobile */
-  .nav-links a:not(.nav-btn),
-  .nav-links .nav-dropdown-trigger,
-  .nav-links .nav-dropdown-item span,
-  .nav-links .nav-dropdown-item i,
-  .nav-links .nav-chevron {
-    color: #000000 !important; /* Forces solid black for max visibility */
+  /* Force visible dark text on mobile menu */
+  .header:not(.scrolled) .nav-links.active a:not(.nav-btn),
+  .header:not(.scrolled) .nav-links.active .nav-dropdown-trigger,
+  .header:not(.scrolled) .nav-links.active .nav-dropdown-item span,
+  .header:not(.scrolled) .nav-links.active .nav-dropdown-item i,
+  .header:not(.scrolled) .nav-links.active .nav-chevron,
+  .header.scrolled .nav-links.active a:not(.nav-btn),
+  .header.scrolled .nav-links.active .nav-dropdown-trigger,
+  .header.scrolled .nav-links.active .nav-dropdown-item span,
+  .header.scrolled .nav-links.active .nav-dropdown-item i,
+  .header.scrolled .nav-links.active .nav-chevron {
+    color: #1A365D !important; /* Dark Blue color for maximum visibility against white */
+    font-weight: 700;
   }
 
   /* Rotate chevron on mobile when open */
@@ -2750,11 +2904,11 @@ h6 {
   }
 
   /* Keep it readable in dark mode */
-  [data-theme="dark"] .nav-links a:not(.nav-btn),
-  [data-theme="dark"] .nav-links .nav-dropdown-trigger,
-  [data-theme="dark"] .nav-links .nav-dropdown-item span,
-  [data-theme="dark"] .nav-links .nav-dropdown-item i,
-  [data-theme="dark"] .nav-links .nav-chevron {
+  [data-theme="dark"] .header .nav-links a:not(.nav-btn),
+  [data-theme="dark"] .header .nav-links .nav-dropdown-trigger,
+  [data-theme="dark"] .header .nav-links .nav-dropdown-item span,
+  [data-theme="dark"] .header .nav-links .nav-dropdown-item i,
+  [data-theme="dark"] .header .nav-links .nav-chevron {
     color: #ffffff !important;
   }
 
@@ -2866,7 +3020,9 @@ h6 {
   }
 
   .nav-links.active {
-    left: 0;
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
   }
 
   .mobile-menu-btn {

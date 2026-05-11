@@ -108,10 +108,6 @@
 
 <body>
 
-    <!-- Top Banner -->
-    <div class="top-banner">
-        <span>PIONEERING SUSTAINABLE INFRASTRUCTURE SOLUTIONS </span>
-    </div>
 
     <!-- Header / Navbar -->
     <header class="header">
@@ -129,35 +125,7 @@
             <nav class="nav-links">
                 <a href="#home" class="active">Home</a>
 
-                <!-- About Dropdown -->
-                <div class="nav-dropdown" id="nav-about-dropdown">
-                    <a href="#about" class="nav-dropdown-trigger">
-                        About <i class="fa-solid fa-chevron-down nav-chevron"></i>
-                    </a>
-                    <div class="nav-dropdown-menu">
-                        <a href="#about" class="nav-dropdown-item">
-                            <i class="fa-solid fa-building-columns"></i>
-                            <span>About Us</span>
-                        </a>
-                        <a href="#clients" class="nav-dropdown-item">
-                            <i class="fa-solid fa-handshake"></i>
-                            <span>Our Clients</span>
-                        </a>
-                        <a href="#services" class="nav-dropdown-item">
-                            <i class="fa-solid fa-gears"></i>
-                            <span>Disciplines</span>
-                        </a>
-                        <a href="#stats-counter" class="nav-dropdown-item">
-                            <i class="fa-solid fa-chart-bar"></i>
-                            <span>Our Stats</span>
-                        </a>
-                        <a href="#timeline" class="nav-dropdown-item">
-                            <i class="fa-solid fa-timeline"></i>
-                            <span>Our Journey</span>
-                        </a>
-
-                    </div>
-                </div>
+                <a href="#about">About</a>
 
                 <a href="#projects">Projects</a>
 
@@ -171,86 +139,38 @@
         </div>
     </header>
 
-    <!-- Hero Section Split Layout -->
-    <section id="home" class="hero-split animate-on-scroll">
-        <div class="hero-left">
-            <div class="hero-content">
-                <h1 class="hero-title">The Architecture <span class="highlight">of Progress</span></h1>
-                <p class="hero-subtitle">We engineer and construct the vital arteries of modern society. From expansive
-                    highway networks to next-generation aviation hubs, our commitment is to build enduring legacies.</p>
-                <div class="hero-actions">
-                    <a href="#projects" class="btn btn-primary">EXPLORE PROJECTS <i
-                            class="fa-solid fa-arrow-right"></i></a>
-                    <a href="#contact" class=" btn btn-secondary con">CONSULTATION</a>
-                </div>
-            </div>
+    <!-- Hero Section — J. Kumar Style Full-Screen + Category Nav -->
+    <section id="home" class="hero-jkumar">
+ <!-- homeSlider/9th.png -->
+  <!-- link road/link-1th.jpeg -->
+        <!-- Background Slides (one per category) -->
+        <div class="hjk-slides">
+            <div class="hjk-slide active"   data-cat="metro"      style="background-image: url('pune metro/1th.png')"></div>
+            <div class="hjk-slide"          data-cat="highway"    style="background-image: url('homeSlider/9th.png ')"></div>
+            <div class="hjk-slide"          data-cat="aviation"   style="background-image: url('airport/airport_1th.png')"></div>
+            <div class="hjk-slide"          data-cat="transport"  style="background-image: url('chennai_mtero/chennai_5th.jpeg')"></div>
+            <div class="hjk-slide"          data-cat="urban"      style="background-image: url('taj.png')"></div>
         </div>
-        <div class="hero-right">
-            <div class="hero-image-pane hero-slider">
-                <div class="hero-slider-track" id="hero-slider-track">
-                    <img loading="eager" class="hero-slide active" src="pune metro/1th.png" alt="Lucknow Metro">
-                    <img loading="eager" class="hero-slide" src="homeSlider/9th.png" alt="Lucknow Metro">
-                    <img loading="lazy" class="hero-slide" src="homeSlider/10th.png" alt="GMLR Tunnel">
-                    <img loading="lazy" class="hero-slide" src="airport/airport_1th.png" alt="Pune Metro">
-                    <img loading="lazy" class="hero-slide" src="LucknowMetro/Lucknow3rd.png" alt="Pune Metro">
 
-                    <img loading="lazy" class="hero-slide" src="covid_isolation_ward.png" alt="Airport">
-                    <img loading="lazy" class="hero-slide" src="taj.png" alt="Taj Hotel">
+        <!-- Overlay -->
+        <div class="hjk-overlay"></div>
 
-                    <img loading="lazy" class="hero-slide" src="Pune Metro Segment Transportation.png" alt="Taj Hotel">
-                    <img loading="lazy" class="hero-slide" src="Khadki Metro ACP Work.png" alt="Taj Hotel">
-                </div>
-                <div class="hero-slider-dots">
-                    <span class="dot active" data-slide="0"></span>
-                    <span class="dot" data-slide="1"></span>
-                    <span class="dot" data-slide="2"></span>
-                    <span class="dot" data-slide="3"></span>
-                    <span class="dot" data-slide="4"></span>
-                    <span class="dot" data-slide="5"></span>
-                    <span class="dot" data-slide="6"></span>
-                    <span class="dot" data-slide="7"></span>
-                    <span class="dot" data-slide="8"></span>
-                </div>
+        <!-- Bottom Category Navigation -->
+        <nav class="hjk-cat-nav">
+            <div class="hjk-cat-line"></div>
+            <div class="hjk-cat-inner">
+                <button class="hjk-cat active" data-cat="metro">METRO</button>
+                <button class="hjk-cat"        data-cat="highway">HIGHWAY</button>
+                <button class="hjk-cat"        data-cat="aviation">AVIATION</button>
+                <button class="hjk-cat"        data-cat="transport">TRANSPORTATION</button>
+                <button class="hjk-cat"        data-cat="urban">URBAN INFRA</button>
             </div>
-            <div class="hero-feature-pane">
-                <span class="feature-tag">FEATURED CAPABILITY</span>
-                <h3>Advanced Highway Systems</h3>
-                <p>Implementing cutting-edge materials and engineering methodologies to create resilient, high-capacity
-                    transportation corridors designed for the next century.</p>
-            </div>
-        </div>
+        </nav>
+
     </section>
 
-    <!-- Client Trust Section (JKumar Style Grid) -->
-    <section id="clients" class="client-grid-section section">
-        <div class="container">
-            <div class="projects-center-header" style="margin-bottom: 30px;">
-                <h2 class="section-title-lines">Our Clients</h2>
-            </div>
-            <div class="text-center" style="margin-bottom: 50px;">
-                <h3 style="font-size: 1.8rem; margin-bottom: 10px; font-weight: 600;">Trusted By Leading Companies</h3>
-                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;"> We take pride in collaborating
-                    with some of India’s most esteemed government institutions and leading private organizations,
-                    contributing to the development of world-class infrastructure.</p>
-            </div>
 
-            <div class="client-grid-container">
-                <div class="client-grid-item"><img loading="lazy" src="clients/AFCONS.png" alt="Afcons"></div>
-                <div class="client-grid-item"><img loading="lazy" src="clients/CEMINDIA.jpg" alt="Cemindia"></div>
-                <div class="client-grid-item"><img loading="lazy" src="clients/gulermak_160x60.png" alt="Gulermak">
-                </div>
-                <div class="client-grid-item"><img loading="lazy" src="clients/jkumar_logo_white.png" alt="JKumar">
-                </div>
-                <div class="client-grid-item"><img loading="lazy" src="clients/KPILLOGO_294_79.png" alt="KPTL"></div>
-                <div class="client-grid-item"><img loading="lazy" src="clients/LARSEN & TOUBRO.svg" alt="L&T"></div>
-                <div class="client-grid-item"><img loading="lazy" src="clients/logo_160x60.png" alt="Suez"></div>
-                <div class="client-grid-item"><img loading="lazy" src="clients/SHAPOORJI PALLORJI.svg" alt="Shapoorji">
-                </div>
-                <div class="client-grid-item"><img loading="lazy" src="clients/SUEZ.svg" alt="Suez"></div>
-                <div class="client-grid-item"><img loading="lazy" src="clients/tata_160x60.png" alt="TATA"></div>
-            </div>
-        </div>
-    </section>
+
 
     <!-- About Us Section -->
     <section id="about" class="about section animate-on-scroll">
@@ -402,14 +322,6 @@
         </div>
     </section>
 
-    <!-- Quote Section -->
-    <section class="quote-section">
-        <div class="quote-overlay"></div>
-        <div class="container quote-container">
-            <h2 class="quote-text">"We do not merely alter<br>landscapes;<br><span>we forge the foundations<br>of
-                    tomorrow."</span></h2>
-        </div>
-    </section>
 
     <!-- Animated Stats Counter (Parallax) -->
     <section id="stats-counter" class="stats-counter section animate-on-scroll">
@@ -450,98 +362,6 @@
         </div>
     </section>
 
-    <!-- ===================== TIMELINE SECTION ===================== -->
-    <section id="timeline" class="timeline-section section animate-on-scroll">
-        <div class="container">
-            <div class="text-center">
-                <span class="section-tag">Our Journey</span>
-                <h2 class="section-title">Milestones of Excellence</h2>
-                <p class="section-subtitle">From a humble beginning in Lucknow to a pan-India infrastructure powerhouse
-                    — a decade and a half of building the future.</p>
-            </div>
-
-            <div class="timeline">
-
-                <!-- 2009 -->
-                <div class="timeline-item tl-left">
-                    <div class="tl-dot"><i class="fa-solid fa-flag"></i></div>
-                    <div class="tl-card">
-                        <span class="tl-year">2009</span>
-                        <h3 class="tl-title">Company Founded</h3>
-                        <p class="tl-desc">Manoj Associates established in Lucknow, Uttar Pradesh as a proprietorship
-                            firm with a vision to serve India's growing infrastructure sector.</p>
-                    </div>
-                </div>
-
-                <!-- 2012 -->
-                <div class="timeline-item tl-right">
-                    <div class="tl-dot"><i class="fa-solid fa-train-subway"></i></div>
-                    <div class="tl-card">
-                        <span class="tl-year">2012</span>
-                        <h3 class="tl-title">First Metro Project</h3>
-                        <p class="tl-desc">Secured and executed civil construction works for Lucknow Metro Stations
-                            under Gulermak-Tata JV — marking our entry into metro rail infrastructure.</p>
-                    </div>
-                </div>
-
-                <!-- 2015 -->
-                <div class="timeline-item tl-left">
-                    <div class="tl-dot"><i class="fa-solid fa-road-bridge"></i></div>
-                    <div class="tl-card">
-                        <span class="tl-year">2015</span>
-                        <h3 class="tl-title">National Expansion</h3>
-                        <p class="tl-desc">Extended operations to Delhi and Pune, executing tunnel segment casting for
-                            Delhi Metro DC-09 and Pune Metro finishing works across multiple stations.</p>
-                    </div>
-                </div>
-
-                <!-- 2018 -->
-                <div class="timeline-item tl-right">
-                    <div class="tl-dot"><i class="fa-solid fa-circle-dot"></i></div>
-                    <div class="tl-card">
-                        <span class="tl-year">2018</span>
-                        <h3 class="tl-title">Tunneling Expertise</h3>
-                        <p class="tl-desc">Established deep specialization in precast tunnel segment ring casting —
-                            working on GMLR (Goregaon-Mulund Link Road) and Patna Metro projects.</p>
-                    </div>
-                </div>
-
-                <!-- 2021 -->
-                <div class="timeline-item tl-left">
-                    <div class="tl-dot"><i class="fa-solid fa-plane-departure"></i></div>
-                    <div class="tl-card">
-                        <span class="tl-year">2021</span>
-                        <h3 class="tl-title">Aviation Sector Entry</h3>
-                        <p class="tl-desc">Awarded prestigious flooring contract for Noida International Airport by Tata
-                            Projects Ltd — expanding into India's booming aviation infrastructure sector.</p>
-                    </div>
-                </div>
-
-                <!-- 2023 -->
-                <div class="timeline-item tl-right">
-                    <div class="tl-dot"><i class="fa-solid fa-city"></i></div>
-                    <div class="tl-card">
-                        <span class="tl-year">2023</span>
-                        <h3 class="tl-title">Pan-India Presence</h3>
-                        <p class="tl-desc">Active projects in Chennai, Bhopal, Patna, Palghar, Pune and Lucknow
-                            simultaneously — cementing a true pan-India footprint across 20+ cities.</p>
-                    </div>
-                </div>
-
-                <!-- 2025 -->
-                <div class="timeline-item tl-left">
-                    <div class="tl-dot"><i class="fa-solid fa-star"></i></div>
-                    <div class="tl-card tl-card-accent">
-                        <span class="tl-year">2025</span>
-                        <h3 class="tl-title">20Cr+ Turnover & Growing</h3>
-                        <p class="tl-desc">Achieved annual turnover of 20Cr+ with 50+ landmark projects executed.
-                            Continuing to build the arteries of modern India with unwavering commitment.</p>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
 
     <!-- Projects Section (Pill Filter) -->
     <section id="projects" class="portfolio section animate-on-scroll">
@@ -799,10 +619,9 @@
                     </div>
                 </div>
 
-                <div class="pcard" data-city="lucknow" data-sector="urban"
-                    data-title="Basalt Cladding - Taj Hotel" data-client="Taj Hotels / Tata"
-                    data-amount="-" data-status="Completed" data-location="Gomti Nagar, Lucknow"
-                    data-gallery="taj.png"
+                <div class="pcard" data-city="lucknow" data-sector="urban" data-title="Basalt Cladding - Taj Hotel"
+                    data-client="Taj Hotels / Tata" data-amount="-" data-status="Completed"
+                    data-location="Gomti Nagar, Lucknow" data-gallery="taj.png"
                     data-desc="Specialized work order for fixing high-quality Basalt Cladding for the prestigious Taj Hotel Project in Gomti Nagar, Lucknow.">
                     <div class="pcard-image"><img loading="lazy" src="taj.png" alt="Taj Hotel Lucknow">
                         <div class="pcard-overlay"><button class="view-details-btn">VIEW DETAILS</button></div>
@@ -828,6 +647,36 @@
         </div>
     </section>
 
+    <!-- Client Trust Section (JKumar Style Grid) -->
+    <section id="clients" class="client-grid-section section">
+        <div class="container">
+            <div class="projects-center-header" style="margin-bottom: 30px;">
+                <h2 class="section-title-lines">Our Clients</h2>
+            </div>
+            <div class="text-center" style="margin-bottom: 50px;">
+                <h3 style="font-size: 1.8rem; margin-bottom: 10px; font-weight: 600;">Trusted By Leading Companies</h3>
+                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;"> We take pride in collaborating
+                    with some of India’s most esteemed government institutions and leading private organizations,
+                    contributing to the development of world-class infrastructure.</p>
+            </div>
+
+            <div class="client-grid-container">
+                <div class="client-grid-item"><img loading="lazy" src="clients/AFCONS.png" alt="Afcons"></div>
+                <div class="client-grid-item"><img loading="lazy" src="clients/CEMINDIA.jpg" alt="Cemindia"></div>
+                <div class="client-grid-item"><img loading="lazy" src="clients/gulermak_160x60.png" alt="Gulermak">
+                </div>
+                <div class="client-grid-item"><img loading="lazy" src="clients/jkumar_logo_white.png" alt="JKumar">
+                </div>
+                <div class="client-grid-item"><img loading="lazy" src="clients/KPILLOGO_294_79.png" alt="KPTL"></div>
+                <div class="client-grid-item"><img loading="lazy" src="clients/LARSEN & TOUBRO.svg" alt="L&T"></div>
+                <div class="client-grid-item"><img loading="lazy" src="clients/logo_160x60.png" alt="Suez"></div>
+                <div class="client-grid-item"><img loading="lazy" src="clients/SHAPOORJI PALLORJI.svg" alt="Shapoorji">
+                </div>
+                <div class="client-grid-item"><img loading="lazy" src="clients/SUEZ.svg" alt="Suez"></div>
+                <div class="client-grid-item"><img loading="lazy" src="clients/tata_160x60.png" alt="TATA"></div>
+            </div>
+        </div>
+    </section>
 
     <!-- Team Section -->
     <section id="team" class="team section">
@@ -986,9 +835,10 @@
                     <ul class="footer-links">
                         <li><a href="#about">About Us</a></li>
                         <li><a href="awards.html">Our Awards</a></li>
-                        <li><a href="https://www.google.co.in/search?sca_esv=816abb5a51ae04a7&sxsrf=ANbL-n4kLghMJUzBOv6Ba0apOXT3EbdNNw:1774938644123&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOZsILx00teZDa9zBU473f_QRllV2dqaGZuqmPVlEUN5fQ4vMYTRvVJgWRPgkTTmz-Ftw6mwooFmoFJM-NPGi1daE4qmbFN9RsNzcMvDBYC3Q0hD8kg%3D%3D&q=MANOJ+ASSOCIATES+Reviews&sa=X&ved=2ahUKEwjx8oXbwcmTAxX2SmwGHfGYIpIQ0bkNegQIFxAH&biw=1600&bih=765&dpr=1" target="_blank">Google Reviews</a></li>
+                        <li><a href="https://www.google.co.in/search?sca_esv=816abb5a51ae04a7&sxsrf=ANbL-n4kLghMJUzBOv6Ba0apOXT3EbdNNw:1774938644123&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOZsILx00teZDa9zBU473f_QRllV2dqaGZuqmPVlEUN5fQ4vMYTRvVJgWRPgkTTmz-Ftw6mwooFmoFJM-NPGi1daE4qmbFN9RsNzcMvDBYC3Q0hD8kg%3D%3D&q=MANOJ+ASSOCIATES+Reviews&sa=X&ved=2ahUKEwjx8oXbwcmTAxX2SmwGHfGYIpIQ0bkNegQIFxAH&biw=1600&bih=765&dpr=1"
+                                target="_blank">Google Reviews</a></li>
                         <li><a href="#team">Our Leadership</a></li>
-                        <li><a href="#timeline">Our Journey</a></li>
+
                     </ul>
                 </div>
 
@@ -1024,8 +874,8 @@
         <div class="footer-bottom">
             <div class="container bottom-flex">
                 <p>&copy; 2026 Manoj Associates. All rights reserved.</p>
-                <p>Designed & Developed by <a href="https://quantsync.vercel.app/" target="_blank"
-                        class="footer-dev-credit">QuantSync</a></p>
+                <p>Designed & Developed by<span style="color:#FFD700; font-weight: bold; margin-left: 2px;">
+                        Ujjawal</span></a></p>
             </div>
         </div>
     </footer>

@@ -660,38 +660,97 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 10. Hero Image Slider (Horizontal Slide Effect)
-    const slides = document.querySelectorAll('.hero-slide');
-    const sliderTrack = document.getElementById('hero-slider-track');
-    const dots = document.querySelectorAll('.hero-slider-dots .dot');
+    // 10. Hero Slider — J. Kumar Category Tab Style
+    const hjkSlides = document.querySelectorAll('.hjk-slide');
+    const hjkCats   = document.querySelectorAll('.hjk-cat');
 
-    if (slides.length && sliderTrack) {
-        let currentSlide = 0;
+    // Map hero category → project filter pill data-filter value
+    const catToFilter = {
+        metro:     'metro',
+        highway:   'road',
+        aviation:  'airport',
+        transport: 'transport',
+        urban:     'urban'
+    };
 
-        const updateSlider = (index) => {
-            currentSlide = index;
-            sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+    // Helper: trigger a project filter pill click
+    const triggerProjectFilter = (filterVal) => {
+        const pill = document.querySelector(`.filter-pill[data-filter="${filterVal}"]`);
+        if (pill) pill.click();
+    };
 
-            // Sync dots
-            if (dots.length) {
-                dots.forEach(d => d.classList.remove('active'));
-                dots[currentSlide].classList.add('active');
+    if (hjkSlides.length && hjkCats.length) {
+        let currentCat = 'metro';
+        let hjkTimer   = null;
+        const catOrder = ['metro', 'highway', 'aviation', 'transport', 'urban'];
+
+        const switchTo = (cat, scrollToProjects = false) => {
+            // Deactivate all
+            hjkSlides.forEach(s => s.classList.remove('active'));
+            hjkCats.forEach(b => b.classList.remove('active'));
+
+            // Activate matching slide
+            const slide = document.querySelector(`.hjk-slide[data-cat="${cat}"]`);
+            const btn   = document.querySelector(`.hjk-cat[data-cat="${cat}"]`);
+
+            if (slide) slide.classList.add('active');
+            if (btn)   btn.classList.add('active');
+            currentCat = cat;
+
+            // If user clicked (not auto-rotate) → scroll to projects + apply filter
+            if (scrollToProjects) {
+                const projectsSection = document.getElementById('projects');
+                if (projectsSection) {
+                    const offset = projectsSection.getBoundingClientRect().top + window.pageYOffset - 80;
+                    window.scrollTo({ top: offset, behavior: 'smooth' });
+                }
+                // Apply matching filter after slight delay (let scroll start)
+                setTimeout(() => triggerProjectFilter(catToFilter[cat] || 'all'), 300);
             }
         };
 
-        const slideInterval = setInterval(() => {
-            let next = (currentSlide + 1) % slides.length;
-            updateSlider(next);
-        }, 5000);
+        const startAuto = () => {
+            clearInterval(hjkTimer);
+            hjkTimer = setInterval(() => {
+                const idx  = catOrder.indexOf(currentCat);
+                const next = catOrder[(idx + 1) % catOrder.length];
+                switchTo(next, false); // auto-rotate: no scroll
+            }, 6000);
+        };
 
-        // Dot clicks
-        dots.forEach((dot, i) => {
-            dot.addEventListener('click', () => {
-                clearInterval(slideInterval);
-                updateSlider(i);
+        // Button clicks — user intent → scroll to projects
+        hjkCats.forEach(btn => {
+            btn.addEventListener('click', () => {
+                clearInterval(hjkTimer);      // stop auto-rotate on click
+                switchTo(btn.dataset.cat, true); // true = scroll to projects
             });
         });
+
+        // Touch swipe on hero (no scroll — just slide change)
+        let touchX = 0;
+        const heroEl = document.getElementById('home');
+        if (heroEl) {
+            heroEl.addEventListener('touchstart', e => {
+                touchX = e.changedTouches[0].clientX;
+            }, { passive: true });
+            heroEl.addEventListener('touchend', e => {
+                const diff = touchX - e.changedTouches[0].clientX;
+                if (Math.abs(diff) > 50) {
+                    const idx = catOrder.indexOf(currentCat);
+                    const next = diff > 0
+                        ? catOrder[(idx + 1) % catOrder.length]
+                        : catOrder[(idx - 1 + catOrder.length) % catOrder.length];
+                    switchTo(next, false);
+                    startAuto();
+                }
+            }, { passive: true });
+        }
+
+        // Init
+        switchTo('metro', false);
+        startAuto();
     }
+
 
     // 11. Mobile Touch Support - Simplified for full card click
     // Note: The main click listener on .pcard already handles both mobile and desktop.
