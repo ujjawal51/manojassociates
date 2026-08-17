@@ -1,5 +1,5 @@
 /**
- * JavaScript for Tiwari Infrastructure Pvt Ltd
+ * JavaScript for Manoj Associates
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -75,32 +75,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1.5 Theme Toggle Logic
     const themeToggleBtn = document.getElementById('theme-toggle');
-    const themeIcon = themeToggleBtn.querySelector('i');
+    const themeIcon = themeToggleBtn ? themeToggleBtn.querySelector('i') : null;
 
     // Check local storage for theme preference, default to light
     const currentTheme = localStorage.getItem('theme') || 'light';
 
     if (currentTheme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
-        themeIcon.classList.remove('fa-moon');
-        themeIcon.classList.add('fa-sun'); // Show sun icon when in dark mode
-    }
-
-    themeToggleBtn.addEventListener('click', () => {
-        let theme = document.documentElement.getAttribute('data-theme') || 'light';
-
-        if (theme === 'light') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            localStorage.setItem('theme', 'dark');
+        if (themeIcon) {
             themeIcon.classList.remove('fa-moon');
             themeIcon.classList.add('fa-sun');
-        } else {
-            document.documentElement.removeAttribute('data-theme'); // default is now light
-            localStorage.setItem('theme', 'light');
-            themeIcon.classList.remove('fa-sun');
-            themeIcon.classList.add('fa-moon');
         }
-    });
+    }
+
+    if (themeToggleBtn && themeIcon) {
+        themeToggleBtn.addEventListener('click', () => {
+            let theme = document.documentElement.getAttribute('data-theme') || 'light';
+
+            if (theme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        });
+    }
 
     // 2. Sticky Navbar Effect on Scroll
     const header = document.querySelector('.header');
@@ -413,7 +417,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (pillContainer) {
         const pills = pillContainer.querySelectorAll('.filter-pill');
-        const projectCards = Array.from(document.querySelectorAll('.pcard'));
         const showMoreBtnWrap = document.querySelector('.show-more-projects-wrap');
         const showMoreBtn = document.querySelector('.btn-show-more');
 
@@ -423,6 +426,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const filterProjects = (filter) => {
             currentFilter = filter;
             let matchCount = 0;
+            const projectCards = Array.from(document.querySelectorAll('.pcard'));
 
             projectCards.forEach((card) => {
                 // Explicitly hide projects marked as data-hidden
@@ -455,6 +459,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (showMoreBtnWrap) showMoreBtnWrap.style.display = 'none';
             }
         };
+
+        window.filterProjects = filterProjects;
 
         pills.forEach(pill => {
             pill.addEventListener('click', () => {
@@ -495,18 +501,36 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById("modal-project-desc").innerText = desc;
 
             let galleryImages = [];
-            if (dataGallery) {
-                galleryImages = dataGallery.split(',').map(s => s.trim());
+            if (card._projectPhotos && Array.isArray(card._projectPhotos) && card._projectPhotos.length) {
+                galleryImages = card._projectPhotos;
+            } else if (dataGallery) {
+                try {
+                    if (dataGallery.startsWith('%5B') || dataGallery.startsWith('[')) {
+                        galleryImages = JSON.parse(decodeURIComponent(dataGallery));
+                    } else if (dataGallery.includes('|||')) {
+                        galleryImages = dataGallery.split('|||').map(s => s.trim());
+                    } else if (dataGallery.includes('data:image')) {
+                        galleryImages = dataGallery.split(/,\s*(?=data:image\/|https?:\/\/|[a-zA-Z0-9_\-\/]+\.(?:png|jpe?g|webp|gif))/i).map(s => s.trim());
+                    } else {
+                        galleryImages = dataGallery.split(',').map(s => s.trim());
+                    }
+                } catch (e) {
+                    galleryImages = [mainImg];
+                }
             } else {
                 galleryImages = [mainImg];
             }
 
-            currentGalleryImages = galleryImages.filter(src => src && src !== "undefined");
+            currentGalleryImages = galleryImages.filter(src => src && src !== "undefined" && src.trim().length > 3);
+            if (!currentGalleryImages.length && mainImg) {
+                currentGalleryImages = [mainImg];
+            }
+
             projectGallery.innerHTML = "";
             currentGalleryImages.forEach((src, index) => {
                 const item = document.createElement("div");
                 item.className = "gallery-item";
-                item.innerHTML = `<img src="${src}" alt="Project View ${index + 1}">`;
+                item.innerHTML = `<img src="${src}" alt="Project View ${index + 1}" onerror="this.src='homeSlider/9th.png'">`;
                 item.onclick = (ev) => {
                     ev.stopPropagation();
                     openLightbox(index);
@@ -765,26 +789,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const form = document.getElementById("contactForm");
 
-form.addEventListener("submit", async function (e) {
-    e.preventDefault();
+if (form) {
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
 
-    const data = new FormData(form);
+        const data = new FormData(form);
+        const submitBtn = form.querySelector('[type="submit"]');
+        if (submitBtn) { submitBtn.textContent = 'SENDING…'; submitBtn.disabled = true; }
 
-    const res = await fetch(" https://formspree.io/f/xojkgrol", {
-        method: "POST",
-        body: data,
-        headers: {
-            'Accept': 'application/json'
+        try {
+            const res = await fetch("https://formspree.io/f/xojkgrol", {
+                method: "POST",
+                body: data,
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (res.ok) {
+                form.reset();
+                showHpToast('✅ Inquiry sent successfully! We will contact you soon.', 'success');
+            } else {
+                showHpToast('❌ Something went wrong. Please try again.', 'error');
+            }
+        } catch {
+            showHpToast('❌ Network error. Please check your connection.', 'error');
+        } finally {
+            if (submitBtn) { submitBtn.textContent = 'SUBMIT INQUIRY'; submitBtn.disabled = false; }
         }
     });
-
-    if (res.ok) {
-        // alert("✅ Inquiry Submitted Successfully!");
-        // form.reset();
-    } else {
-        alert("❌ Something went wrong!");
-    }
-});
+}
 
 /* ── Back To Top Button ── */
 (function () {
@@ -868,3 +900,546 @@ form.addEventListener("submit", async function (e) {
         });
     });
 })();
+
+/* ── Requirements & Careers — Homepage Renderer ── */
+(function () {
+    /* ── shared DB helpers (same keys as admin.js) ── */
+    const REQS_KEY     = 'ma_requirements';
+    const APPS_KEY     = 'ma_applications';
+    const SETTINGS_KEY = 'ma_admin_settings';
+
+    const CAT_LABELS = {
+        metro:       'Metro & Tunneling',
+        highway:     'Highway & Bridge',
+        aviation:    'Aviation',
+        machinery:   'Heavy Machinery',
+        procurement: 'Procurement',
+    };
+    const URGENCY_LABELS = {
+        urgent:    '🔴 Urgent Hiring',
+        immediate: '🟠 Immediate',
+        active:    '🟢 Active',
+        pipeline:  '🔵 Pipeline',
+    };
+
+    /* ── seed requirements into localStorage if empty (mirrors admin.js seeds) ── */
+    const SEED = [
+        { id:'req_001', title:'Senior Civil Engineer — Metro Tunneling',        category:'metro',       openings:4, experience:'5–8 Years',        location:'Pune Metro / Chennai Metro',          urgency:'urgent',    active:true,  description:'We are urgently seeking Senior Civil Engineers with deep expertise in metro tunneling, TBM operations, and underground station civil works.',                                                 qualifications:'B.Tech/M.Tech Civil. Prior metro project experience preferred.' },
+        { id:'req_002', title:'Site Supervisor — Civil & Finishing Works',       category:'metro',       openings:8, experience:'3–5 Years',        location:'Delhi Metro / Bhopal Metro',           urgency:'urgent',    active:true,  description:'Supervise day-to-day civil finishing, cladding, and MEP integration works on metro stations. Manage workforce of 20–50 labourers.',                                                     qualifications:'Diploma / B.Tech Civil. Metro finishing experience preferred.' },
+        { id:'req_003', title:'Survey Engineer',                                  category:'metro',       openings:3, experience:'2–4 Years',        location:'Lucknow / Patna Metro',                urgency:'immediate', active:true,  description:'Conduct topographic, alignment, and settlement monitoring surveys on underground and elevated metro corridor sites using Total Station and GPS.',                                        qualifications:'B.Tech / Diploma Civil. Hands-on survey instrumentation skills required.' },
+        { id:'req_004', title:'Hydraulic Rig / Piling Operator',                 category:'machinery',   openings:5, experience:'4–7 Years',        location:'Noida International Airport / Pan-India', urgency:'urgent',    active:true,  description:'Operate hydraulic rotary piling rigs for airport foundation and metro pile casting. ITI or equivalent certification required.',                                                          qualifications:'ITI Mechanical/Operator. Prior airport or metro site experience.' },
+        { id:'req_005', title:'Sub-Contractor — Concrete & Shuttering',          category:'procurement', openings:2, experience:'Established Firm', location:'Pan-India (Multiple Project Sites)',   urgency:'active',    active:true,  description:'Empanelment of experienced sub-contracting firms for mass concrete pouring, shuttering / form-work, and reinforcement works on metro and highway projects.',                              qualifications:'Registered firm with GST, PF/ESI. 3+ years project execution track record.' },
+        { id:'req_006', title:'Highway Site Engineer',                            category:'highway',     openings:3, experience:'2–5 Years',        location:'Uttar Pradesh / Maharashtra',          urgency:'active',    active:true,  description:'Site execution of highway embankment, pavement layering, road restoration, and drainage works as part of NHAI/state-highway projects.',                                                   qualifications:'B.Tech / Diploma Civil. Experience on NH or SH highway project mandatory.' },
+    ];
+
+    function getReqs() {
+        try { return JSON.parse(localStorage.getItem(REQS_KEY)) || null; } catch { return null; }
+    }
+    function getSettings() {
+        try { return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}; } catch { return {}; }
+    }
+    function saveApps(apps) {
+        localStorage.setItem(APPS_KEY, JSON.stringify(apps));
+        if (typeof CloudDB !== 'undefined' && CloudDB.isCloudReady()) {
+            CloudDB.set(APPS_KEY, apps, APPS_KEY);
+        }
+    }
+    function getApps() { try { return JSON.parse(localStorage.getItem(APPS_KEY)) || []; } catch { return []; } }
+
+    /* If admin hasn't seeded yet, use built-in seed so homepage shows content immediately */
+    function resolveReqs() {
+        const stored = getReqs();
+        if (stored && stored.length) return stored;
+        localStorage.setItem(REQS_KEY, JSON.stringify(SEED));
+        return SEED;
+    }
+
+    /* ── Render announcement ticker ── */
+    function renderTicker() {
+        const s = getSettings();
+        const ticker = document.getElementById('announcement-ticker');
+        if (!ticker) return;
+
+        const isOn  = s.announcer_on !== undefined ? (s.announcer_on === true || s.announcer_on === 'true') : true;
+        const text  = s.announcer_text || '🚨 URGENT REQUIREMENT: Seeking Senior Civil Engineers for Pune Metro Tunneling — 3-5 Yrs Experience  |  🏗️ IMMEDIATE NEED: Experienced Site Supervisors for Noida Airport Project  |  ⚙️ HIRING: Hydraulic Rig Operators & Surveyors — Apply Now via Contact Form';
+        const style = s.ticker_style || 'urgent';
+
+        if (!isOn) { 
+            ticker.style.display = 'none'; 
+            return; 
+        }
+
+        ticker.style.display = 'flex';
+        ticker.className = `hero-announcement-strip style-${style}`;
+
+        const badgeEl = ticker.querySelector('.announcement-badge');
+        if (badgeEl) {
+            const badgeMap = {
+                urgent:  '<i class="fa-solid fa-bullhorn"></i> ANNOUNCEMENT',
+                warning: '<i class="fa-solid fa-triangle-exclamation"></i> URGENT',
+                success: '<i class="fa-solid fa-circle-check"></i> NOTICE',
+                dark:    '<i class="fa-solid fa-circle-info"></i> UPDATE'
+            };
+            badgeEl.innerHTML = badgeMap[style] || '<i class="fa-solid fa-bullhorn"></i> ANNOUNCEMENT';
+        }
+
+        const textEl = document.getElementById('ticker-text');
+        if (textEl) textEl.textContent = text + '    ✦    ' + text + '    ✦    ' + text;
+
+        document.getElementById('ticker-close')?.addEventListener('click', () => {
+            ticker.style.display = 'none';
+        });
+    }
+
+    window.renderTicker = renderTicker;
+
+    /* ── Render requirement cards ── */
+    let currentFilter = 'all';
+
+    function renderCards(filter) {
+        currentFilter = filter || 'all';
+        const grid = document.getElementById('req-cards-grid');
+        if (!grid) return;
+
+        const settings = getSettings();
+        if (settings.req_section_title) {
+            const titleEl = document.getElementById('req-section-title');
+            if (titleEl) titleEl.textContent = settings.req_section_title;
+        }
+        if (settings.req_section_subtitle) {
+            const subEl = document.getElementById('req-section-subtitle');
+            if (subEl) subEl.textContent = settings.req_section_subtitle;
+        }
+
+        let reqs = resolveReqs().filter(r => r.active);
+        if (currentFilter !== 'all') reqs = reqs.filter(r => r.category === currentFilter);
+
+        if (!reqs.length) {
+            grid.innerHTML = `<div class="req-empty-state"><i class="fa-solid fa-folder-open"></i><p>No active requirements in this category right now. Check back soon!</p></div>`;
+            return;
+        }
+
+        grid.innerHTML = reqs.map(r => `
+            <div class="req-card" data-category="${r.category}">
+                <div class="req-card-header">
+                    <div class="req-card-title">${r.title}</div>
+                    <span class="req-urgency-badge ${r.urgency}">${URGENCY_LABELS[r.urgency] || r.urgency}</span>
+                </div>
+                <div class="req-card-meta">
+                    <span class="req-meta-item"><i class="fa-solid fa-users"></i>${r.openings} Opening${r.openings > 1 ? 's' : ''}</span>
+                    <span class="req-meta-item"><i class="fa-solid fa-briefcase"></i>${r.experience}</span>
+                    <span class="req-meta-item"><i class="fa-solid fa-location-dot"></i>${r.location}</span>
+                </div>
+                <p class="req-card-desc">${r.description}</p>
+                <div class="req-card-footer">
+                    <span class="req-cat-chip">${CAT_LABELS[r.category] || r.category}</span>
+                    <button class="btn-apply-now" onclick="openApplyModal('${r.title.replace(/'/g, "&apos;")}')"><i class="fa-solid fa-paper-plane"></i> Apply Now</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    /* ── Filter pills ── */
+    document.querySelectorAll('.req-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            document.querySelectorAll('.req-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            renderCards(pill.dataset.reqFilter);
+        });
+    });
+
+    /* ── Apply Modal ── */
+    window.openApplyModal = function(position) {
+        const modal = document.getElementById('apply-modal');
+        const posTitle = document.getElementById('apply-modal-position');
+        const posHidden = document.getElementById('apply-position-hidden');
+        if (!modal) return;
+        if (posTitle) posTitle.textContent = 'Apply for: ' + position;
+        if (posHidden) posHidden.value = position;
+
+        const settings = getSettings();
+        const emailLink = document.getElementById('apply-email-link');
+        if (emailLink && settings.contact_email) {
+            emailLink.href = 'mailto:' + settings.contact_email;
+            emailLink.textContent = settings.contact_email;
+        }
+
+        // Reset to form view
+        const applyBody = document.getElementById('apply-modal-body');
+        const form = document.getElementById('apply-form');
+        if (applyBody && form) form.reset();
+
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.closeApplyModal = function() {
+        const modal = document.getElementById('apply-modal');
+        if (modal) modal.classList.remove('open');
+        document.body.style.overflow = '';
+    };
+
+    document.getElementById('apply-modal-close')?.addEventListener('click', window.closeApplyModal);
+    document.getElementById('apply-modal')?.addEventListener('click', function(e) {
+        if (e.target === this) window.closeApplyModal();
+    });
+
+    document.getElementById('btn-submit-apply')?.addEventListener('click', async () => {
+        const name     = document.getElementById('apply-name')?.value.trim();
+        const phone    = document.getElementById('apply-phone')?.value.trim();
+        const email    = document.getElementById('apply-email')?.value.trim();
+        const exp      = document.getElementById('apply-experience')?.value;
+        const message  = document.getElementById('apply-message')?.value.trim();
+        const position = document.getElementById('apply-position-hidden')?.value;
+
+        if (!name || !phone || !email) {
+            showHpToast('⚠️ Please fill your name, phone and email.', 'warning');
+            return;
+        }
+
+        const submitBtn = document.getElementById('btn-submit-apply');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting…';
+        }
+
+        const newApp = {
+            id: 'app_' + Date.now() + '_' + Math.floor(Math.random()*1000),
+            name,
+            phone,
+            email,
+            experience: exp || '—',
+            message: message || 'No message provided.',
+            position: position || 'General Opening',
+            status: 'new',
+            created: new Date().toISOString(),
+        };
+
+        if (typeof CloudDB !== 'undefined') {
+            await CloudDB.submitApplication(newApp);
+        } else {
+            const apps = getApps();
+            apps.unshift(newApp);
+            saveApps(apps);
+        }
+
+        // Show success inside modal
+        const body = document.getElementById('apply-modal-body');
+        if (body) {
+            body.innerHTML = `
+                <div class="apply-success">
+                    <div class="apply-success-icon"><i class="fa-solid fa-circle-check"></i></div>
+                    <h4>Application Submitted!</h4>
+                    <p>Thank you, <strong>${name}</strong>! Your application for <em>${position}</em> has been received.<br><br>Our team will review your profile and contact you at <strong>${phone}</strong> or <strong>${email}</strong> within 2–3 business days.</p>
+                </div>
+            `;
+        }
+        setTimeout(() => { window.closeApplyModal(); }, 3500);
+        showHpToast('✅ Application submitted! We will be in touch soon.', 'success');
+    });
+
+    /* ── Robust Realtime Cloud & Local Sync ── */
+    function attachCloudSync() {
+        if (typeof CloudDB === 'undefined' || !CloudDB.isCloudReady()) return;
+
+        // 1. Initial Cloud Fetch for Settings (Announcement Banner)
+        CloudDB.get(SETTINGS_KEY).then(data => {
+            if (data && typeof data === 'object') {
+                localStorage.setItem(SETTINGS_KEY, JSON.stringify(data));
+                renderTicker();
+                renderCards(currentFilter);
+            }
+        }).catch(() => {});
+
+        // 2. Initial Cloud Fetch for Requirements
+        CloudDB.get(REQS_KEY).then(data => {
+            if (data && Array.isArray(data) && data.length) {
+                localStorage.setItem(REQS_KEY, JSON.stringify(data));
+                renderCards(currentFilter);
+            }
+        }).catch(() => {});
+
+        // 3. Live Cloud Listeners (instant cross-device updates)
+        CloudDB.listen(REQS_KEY, (data) => {
+            let list = [];
+            if (data && Array.isArray(data)) list = data;
+            else if (data && typeof data === 'object') list = Object.values(data);
+            if (list.length) {
+                localStorage.setItem(REQS_KEY, JSON.stringify(list));
+                renderCards(currentFilter);
+            }
+        });
+
+        CloudDB.listen(SETTINGS_KEY, (data) => {
+            if (data && typeof data === 'object') {
+                localStorage.setItem(SETTINGS_KEY, JSON.stringify(data));
+                renderTicker();
+                renderCards(currentFilter);
+            }
+        });
+    }
+
+    // Attach immediately and retry on load/timers
+    attachCloudSync();
+    window.addEventListener('load', attachCloudSync);
+    setTimeout(attachCloudSync, 800);
+    setTimeout(attachCloudSync, 2000);
+
+    /* ── Poll for local admin changes every 1.5s (fallback when cloud not connected) ── */
+    let _lastSyncStamp = localStorage.getItem('ma_last_updated') || '0';
+
+    setInterval(() => {
+        const newStamp = localStorage.getItem('ma_last_updated') || '0';
+        if (newStamp !== _lastSyncStamp) {
+            _lastSyncStamp = newStamp;
+            renderTicker();
+            renderCards(currentFilter);
+        }
+    }, 1500);
+
+    /* ── Cross-tab Storage Event Listener ── */
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'ma_last_updated' || e.key === REQS_KEY || e.key === SETTINGS_KEY) {
+            _lastSyncStamp = localStorage.getItem('ma_last_updated') || '0';
+            renderTicker();
+            renderCards(currentFilter);
+        }
+    });
+
+    /* ── Init ── */
+    renderTicker();
+    renderCards('all');
+
+})();
+
+/* ── Homepage Toast Helper ── */
+let _hpToastTimer;
+function showHpToast(msg, type) {
+    const el = document.getElementById('hp-toast');
+    if (!el) return;
+    el.innerHTML = msg;
+    el.className = `hp-toast show`;
+    if (type === 'error')   el.style.background = '#B71C1C';
+    else if (type === 'warning') el.style.background = '#E65100';
+    else el.style.background = '#1B5E20';
+    clearTimeout(_hpToastTimer);
+    _hpToastTimer = setTimeout(() => { el.className = 'hp-toast'; }, 4000);
+}
+
+/* ── Secret Admin Access: Footer Logo Triple-Click ── */
+(function () {
+    const logo = document.getElementById('footer-logo-secret');
+    if (!logo) return;
+
+    let clickCount = 0;
+    let clickTimer = null;
+
+    logo.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation(); // stop the smooth-scroll handler from interfering
+
+        clickCount++;
+        clearTimeout(clickTimer);
+
+        if (clickCount >= 3) {
+            clickCount = 0;
+            // Flash logo gold to confirm
+            logo.style.outline = '3px solid rgba(200,164,93,0.85)';
+            logo.style.borderRadius = '8px';
+            logo.style.transition = 'outline 0.2s';
+            setTimeout(() => { logo.style.outline = ''; logo.style.borderRadius = ''; }, 350);
+            // Open admin — must be synchronous (no setTimeout) to avoid popup blocker
+            window.open('admin.html', '_blank');
+        } else {
+            // Reset if no 3rd click within 700ms
+            clickTimer = setTimeout(() => { clickCount = 0; }, 700);
+        }
+    });
+})();
+
+/* ── Dynamic Projects Renderer (Synced with Admin & Cloud Database) ── */
+(function() {
+    const PROJS_KEY = 'ma_projects';
+    const grid = document.getElementById('projects-grid');
+    if (!grid) return;
+
+    const sectorBadgeMap = {
+        metro:     { label: 'Metro', cls: 'metro' },
+        road:      { label: 'Highway', cls: 'road' },
+        airport:   { label: 'Airport', cls: 'airport' },
+        transport: { label: 'Transport', cls: 'transport' },
+        urban:     { label: 'Urban', cls: 'urban' },
+    };
+
+    function renderHomepageProjects() {
+        let projs = [];
+        try {
+            const raw = localStorage.getItem(PROJS_KEY);
+            if (raw) projs = JSON.parse(raw);
+        } catch { projs = []; }
+
+        if (!projs || !projs.length) return; // Keep static fallback if no DB projects
+
+        const activeProjs = projs.filter(p => p.active !== false);
+        if (!activeProjs.length) return;
+
+        grid.innerHTML = activeProjs.map((p, pIdx) => {
+            const photos = Array.isArray(p.photos) ? p.photos : (p.photos ? p.photos.split('|||').map(s=>s.trim()) : []);
+            const mainImg = photos[0] || 'pune metro/1th.png';
+            const galleryAttr = encodeURIComponent(JSON.stringify(photos));
+            const badge = sectorBadgeMap[p.sector] || { label: p.sector || 'Project', cls: 'metro' };
+
+            return `
+                <div class="pcard" 
+                     id="dyn-pcard-${p.id || pIdx}"
+                     data-city="${p.city || (p.location ? p.location.split(',')[0].trim().toLowerCase() : '')}"
+                     data-sector="${p.sector || 'metro'}"
+                     data-title="${p.title}"
+                     data-client="${p.client || 'Manoj Associates'}"
+                     data-amount="-"
+                     data-status="${p.status || 'Completed'}"
+                     data-location="${p.location || 'Pan-India'}"
+                     data-gallery="${galleryAttr}"
+                     data-desc="${p.desc || ''}">
+                    <div class="pcard-image">
+                        <img loading="lazy" src="${mainImg}" alt="${p.title}" onerror="this.src='homeSlider/9th.png'">
+                        <div class="pcard-overlay"><button class="view-details-btn">VIEW DETAILS</button></div>
+                        <span class="pcard-badge ${badge.cls}">${badge.label}</span>
+                    </div>
+                    <div class="pcard-body">
+                        <h1 style="color: #FFFF;">${p.title}</h1>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        // Store direct references on the card elements
+        activeProjs.forEach((p, pIdx) => {
+            const cardEl = document.getElementById(`dyn-pcard-${p.id || pIdx}`);
+            if (cardEl) {
+                const photos = Array.isArray(p.photos) ? p.photos : [p.photos];
+                cardEl._projectPhotos = photos;
+            }
+        });
+
+        // Trigger pill filter to refresh view
+        const activePill = document.querySelector('.filter-pill.active');
+        const filterVal = activePill ? activePill.getAttribute('data-filter') : 'all';
+        if (typeof window.filterProjects === 'function') {
+            window.filterProjects(filterVal);
+        }
+    }
+
+    // Initial render
+    renderHomepageProjects();
+
+    // Live Cloud Database listener for real-time project additions / updates
+    if (typeof CloudDB !== 'undefined' && CloudDB.isCloudReady()) {
+        CloudDB.listen('ma_projects', (data) => {
+            let list = [];
+            if (data && Array.isArray(data)) list = data;
+            else if (data && typeof data === 'object') list = Object.values(data);
+            if (list.length) {
+                localStorage.setItem(PROJS_KEY, JSON.stringify(list));
+                renderHomepageProjects();
+            }
+        });
+
+        // Real-time Cloud listener for Admin Settings (Announcement Banner)
+        CloudDB.listen('ma_admin_settings', (data) => {
+            if (data && typeof data === 'object') {
+                localStorage.setItem('ma_admin_settings', JSON.stringify(data));
+                if (typeof window.renderTicker === 'function') window.renderTicker();
+                if (typeof window.renderCards === 'function') window.renderCards();
+            }
+        });
+
+        // Real-time Cloud listener for Requirements
+        CloudDB.listen('ma_requirements', (data) => {
+            let list = [];
+            if (data && Array.isArray(data)) list = data;
+            else if (data && typeof data === 'object') list = Object.values(data);
+            if (list.length) {
+                localStorage.setItem('ma_requirements', JSON.stringify(list));
+                if (typeof window.renderCards === 'function') window.renderCards();
+            }
+        });
+    }
+
+    // Polling fallback across browser tabs
+    let _lastProjStamp = localStorage.getItem('ma_last_updated') || '0';
+    setInterval(() => {
+        const stamp = localStorage.getItem('ma_last_updated') || '0';
+        if (stamp !== _lastProjStamp) {
+            _lastProjStamp = stamp;
+            renderHomepageProjects();
+            if (typeof window.renderTicker === 'function') window.renderTicker();
+            if (typeof window.renderCards === 'function') window.renderCards();
+        }
+    }, 1500);
+
+    // Cross-tab storage listener
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'ma_admin_settings' || e.key === 'ma_requirements' || e.key === 'ma_projects' || e.key === 'ma_last_updated') {
+            renderHomepageProjects();
+            if (typeof window.renderTicker === 'function') window.renderTicker();
+            if (typeof window.renderCards === 'function') window.renderCards();
+        }
+    });
+
+})();
+
+/* ── Sticky Header Scroll Listener & Mobile Nav Drawer ── */
+(function() {
+    const header = document.querySelector('.header');
+    function updateHeaderScroll() {
+        if (window.scrollY > 15) {
+            header?.classList.add('scrolled');
+        } else {
+            header?.classList.remove('scrolled');
+        }
+    }
+    window.addEventListener('scroll', updateHeaderScroll, { passive: true });
+    updateHeaderScroll();
+
+    // Mobile Menu Toggle
+    const menuBtn = document.querySelector('.mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+
+    menuBtn?.addEventListener('click', function(e) {
+        e.stopPropagation();
+        navLinks?.classList.toggle('open');
+        const icon = menuBtn.querySelector('i');
+        if (icon) {
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-xmark');
+        }
+    });
+
+    // Close mobile menu on clicking any navigation link
+    document.querySelectorAll('.nav-links a').forEach(a => {
+        a.addEventListener('click', () => {
+            navLinks?.classList.remove('open');
+            const icon = menuBtn?.querySelector('i');
+            if (icon) {
+                icon.classList.add('fa-bars');
+                icon.classList.remove('fa-xmark');
+            }
+        });
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+        if (navLinks?.classList.contains('open') && !navLinks.contains(e.target) && !menuBtn?.contains(e.target)) {
+            navLinks.classList.remove('open');
+            const icon = menuBtn?.querySelector('i');
+            if (icon) {
+                icon.classList.add('fa-bars');
+                icon.classList.remove('fa-xmark');
+            }
+        }
+    });
+})();
+
+
+

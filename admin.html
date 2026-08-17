@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — Manoj Associates</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Admin CSS -->
+  <link rel="stylesheet" href="admin.css?v=4">
+</head>
+<body>
+
+<!-- ==========================================
+     LOGIN OVERLAY
+========================================== -->
+<div id="login-overlay">
+  <div class="login-bg-pattern"></div>
+  <div class="login-box">
+    <div class="login-logo">
+      <img src="homeSlider/logo.png" alt="Manoj Associates Logo" onerror="this.style.display='none'">
+      <h2>MANOJ ASSOCIATES</h2>
+      <span>Admin Control Panel</span>
+    </div>
+    <h3>Secure Login</h3>
+    <p>Enter your administrator credentials to access the management panel.</p>
+    <div id="login-error"></div>
+    <form id="login-form" autocomplete="off">
+      <div class="login-field">
+        <label>Username</label>
+        <i class="fa-solid fa-user field-icon"></i>
+        <input type="text" id="login-user" placeholder="Enter username" autocomplete="off" required>
+      </div>
+      <div class="login-field">
+        <label>Password</label>
+        <i class="fa-solid fa-lock field-icon"></i>
+        <input type="password" id="login-pass" placeholder="Enter password" autocomplete="off" required>
+      </div>
+      <button type="submit" class="btn-login">
+        <i class="fa-solid fa-right-to-bracket" style="margin-right:8px;"></i> Sign In to Dashboard
+      </button>
+    </form>
+    <p class="login-hint">Default: Change in Settings after first login.</p>
+  </div>
+</div>
+
+<!-- Mobile sidebar backdrop -->
+<div class="sidebar-backdrop"></div>
+
+<!-- ==========================================
+     ADMIN APPLICATION
+========================================== -->
+<div id="admin-app" style="display:none;">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="main-sidebar">
+    <div class="sidebar-brand">
+      <img src="homeSlider/logo.png" alt="Logo" onerror="this.style.display='none'">
+      <div class="sidebar-brand-text">
+        <span class="brand-name">Manoj Associates</span>
+        <span class="brand-sub">Admin Portal</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Main</div>
+      <div class="sidebar-item active" data-panel="dashboard">
+        <i class="fa-solid fa-gauge-high"></i>
+        <span>Dashboard</span>
+      </div>
+
+      <div class="sidebar-section-label">Content</div>
+      <div class="sidebar-item" data-panel="requirements">
+        <i class="fa-solid fa-hard-hat"></i>
+        <span>Requirements</span>
+      </div>
+      <div class="sidebar-item" data-panel="projects">
+        <i class="fa-solid fa-folder-tree"></i>
+        <span>Projects</span>
+      </div>
+      <div class="sidebar-item" data-panel="applications">
+        <i class="fa-solid fa-file-lines"></i>
+        <span>Applications</span>
+        <span class="badge" id="sidebar-app-badge">0</span>
+      </div>
+      <div class="sidebar-item" data-panel="announcer">
+        <i class="fa-solid fa-bullhorn"></i>
+        <span>Announcement</span>
+      </div>
+
+      <div class="sidebar-section-label">System</div>
+      <div class="sidebar-item" data-panel="settings">
+        <i class="fa-solid fa-gear"></i>
+        <span>Settings</span>
+      </div>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button class="btn-logout" id="btn-logout">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN CONTENT ── -->
+  <div class="main-content">
+
+    <!-- Top Header -->
+    <header class="admin-header">
+      <div class="header-left">
+        <button class="sidebar-toggle btn" id="sidebar-toggle">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div>
+          <div class="page-title" id="page-title">Dashboard</div>
+          <div class="page-breadcrumb">Manoj Associates Admin</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="header-meta">
+          <strong>Administrator</strong>
+          <span id="header-time"></span>
+        </div>
+        <a href="index.html" target="_blank" class="btn btn-ghost btn-sm">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> View Site
+        </a>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="page-content">
+
+      <!-- ==========================================
+           PANEL: Dashboard
+      ========================================== -->
+      <div class="panel active" id="panel-dashboard">
+
+        <!-- Stats -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-icon-wrap blue"><i class="fa-solid fa-clipboard-list"></i></div>
+            <div class="stat-info">
+              <div class="stat-val" id="dash-total-reqs">0</div>
+              <div class="stat-label">Total Requirements</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon-wrap green"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="stat-info">
+              <div class="stat-val" id="dash-active-reqs">0</div>
+              <div class="stat-label">Active / Live</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon-wrap red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div class="stat-info">
+              <div class="stat-val" id="dash-urgent">0</div>
+              <div class="stat-label">Urgent Openings</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon-wrap gold"><i class="fa-solid fa-inbox"></i></div>
+            <div class="stat-info">
+              <div class="stat-val" id="dash-new-apps">0</div>
+              <div class="stat-label">New Applications</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions + Recent Applications -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;flex-wrap:wrap;" class="dash-split">
+
+          <div class="section-card">
+            <div class="section-card-header">
+              <div class="section-card-title"><i class="fa-solid fa-bolt"></i> Quick Actions</div>
+            </div>
+            <div class="section-card-body">
+              <div class="quick-actions">
+                <button class="quick-action-btn" id="qa-add-req">
+                  <i class="fa-solid fa-plus"></i> Add Requirement
+                </button>
+                <button class="quick-action-btn" id="qa-announcer">
+                  <i class="fa-solid fa-bullhorn"></i> Announcement
+                </button>
+                <button class="quick-action-btn" id="qa-apps">
+                  <i class="fa-solid fa-file-lines"></i> View Applications
+                </button>
+                <button class="quick-action-btn" id="qa-settings">
+                  <i class="fa-solid fa-gear"></i> Settings
+                </button>
+                <button class="quick-action-btn" id="qa-homepage">
+                  <i class="fa-solid fa-globe"></i> Live Site
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-card-header">
+              <div class="section-card-title"><i class="fa-solid fa-clock-rotate-left"></i> Recent Applications</div>
+              <button class="btn btn-ghost btn-sm" onclick="switchPanel('applications')">View All</button>
+            </div>
+            <div class="section-card-body">
+              <div id="recent-apps-list"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- ==========================================
+           PANEL: Requirements
+      ========================================== -->
+      <div class="panel" id="panel-requirements">
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="section-card-title"><i class="fa-solid fa-hard-hat"></i> Engineering & Hiring Requirements</div>
+            <button class="btn btn-gold" id="btn-add-req">
+              <i class="fa-solid fa-plus"></i> Add Requirement
+            </button>
+          </div>
+          <div class="section-card-body">
+            <div class="req-toolbar">
+              <div class="search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="req-search" placeholder="Search by title, location…">
+              </div>
+              <select class="filter-select" id="req-filter-cat">
+                <option value="all">All Categories</option>
+                <option value="metro">Metro & Tunneling</option>
+                <option value="highway">Highway & Bridge</option>
+                <option value="aviation">Aviation</option>
+                <option value="machinery">Heavy Machinery</option>
+                <option value="procurement">Procurement / Sub-Contract</option>
+              </select>
+            </div>
+            <div class="req-grid" id="req-grid"></div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ==========================================
+           PANEL: Projects
+      ========================================== -->
+      <div class="panel" id="panel-projects">
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="section-card-title"><i class="fa-solid fa-folder-tree"></i> Landmark Projects &amp; Portfolio</div>
+            <button class="btn btn-gold" id="btn-add-proj">
+              <i class="fa-solid fa-plus"></i> Add Project
+            </button>
+          </div>
+          <div class="section-card-body">
+            <div class="req-toolbar">
+              <div class="search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="proj-search" placeholder="Search projects by title, client, location…">
+              </div>
+              <select class="filter-select" id="proj-filter-cat">
+                <option value="all">All Sectors</option>
+                <option value="metro">Metro &amp; Tunneling</option>
+                <option value="road">Road &amp; Highway</option>
+                <option value="airport">Airports</option>
+                <option value="transport">Transportation</option>
+                <option value="urban">Urban Infra</option>
+              </select>
+            </div>
+            <div class="proj-grid" id="proj-grid"></div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ==========================================
+           PANEL: Applications
+      ========================================== -->
+      <div class="panel" id="panel-applications">
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="section-card-title"><i class="fa-solid fa-file-lines"></i> Candidate Applications</div>
+            <button class="btn btn-ghost btn-sm" id="btn-export-apps">
+              <i class="fa-solid fa-download"></i> Export CSV
+            </button>
+          </div>
+          <div class="section-card-body">
+            <div class="req-toolbar" style="margin-bottom:16px;">
+              <div class="search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="app-search" placeholder="Search by name, position, email…">
+              </div>
+              <select class="filter-select" id="app-filter-status">
+                <option value="all">All Status</option>
+                <option value="new">New</option>
+                <option value="reviewed">Reviewed</option>
+                <option value="shortlisted">Shortlisted</option>
+                <option value="contacted">Contacted</option>
+              </select>
+            </div>
+            <div class="app-table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Position Applied</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Experience</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="apps-tbody">
+                  <tr><td colspan="7">
+                    <div class="empty-state">
+                      <i class="fa-solid fa-inbox"></i>
+                      <h3>No Applications</h3>
+                      <p>Applications submitted on the homepage will appear here.</p>
+                    </div>
+                  </td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ==========================================
+           PANEL: Announcer
+      ========================================== -->
+      <div class="panel" id="panel-announcer">
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="section-card-title"><i class="fa-solid fa-bullhorn"></i> Homepage Announcement Banner</div>
+          </div>
+          <div class="section-card-body">
+
+            <!-- Enable / Disable Toggle -->
+            <div class="toggle-group" id="ann-toggle-wrap" style="cursor:pointer; margin-bottom:20px;">
+              <div>
+                <div class="toggle-group-label">Enable Announcement Bar</div>
+                <div class="toggle-group-desc">Show / hide the scrolling ticker on homepage</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="toggle-switch" id="ann-toggle-switch"></div>
+                <span id="ann-toggle-label" style="font-size:0.8rem;font-weight:600;color:#6B7280;">OFF</span>
+              </div>
+            </div>
+
+            <!-- Announcement Text -->
+            <div class="form-group-admin">
+              <label>Announcement Text</label>
+              <textarea id="ann-text" rows="4" placeholder="e.g. 🚨 URGENT: Hiring Civil Engineers for Pune Metro — Apply Now!  |  🏗️ Immediate Need: Site Supervisors for Noida Airport"></textarea>
+              <p style="font-size:0.75rem;color:#6B7280;margin-top:6px;">Use <strong>|</strong> to separate multiple announcements. They will scroll continuously on the homepage.</p>
+            </div>
+
+            <!-- Banner Style -->
+            <div class="form-group-admin">
+              <label>Banner Color</label>
+              <select id="ann-style">
+                <option value="urgent">🔵 Dark Navy (Default)</option>
+                <option value="warning">🟠 Deep Orange (Urgent)</option>
+                <option value="success">🟢 Dark Green</option>
+                <option value="dark">⚫ Black (Minimal)</option>
+              </select>
+            </div>
+
+            <!-- Live Preview -->
+            <div class="form-group-admin">
+              <label>Preview (how it looks on homepage)</label>
+              <div id="ann-preview" style="border-radius:8px;padding:12px 18px;color:#fff;font-size:0.85rem;font-weight:500;overflow:hidden;word-break:break-word;line-height:1.5;min-height:44px;display:flex;align-items:center;gap:10px;">
+                <span style="background:rgba(200,164,93,0.9);color:#1F3A5F;font-size:0.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:4px;flex-shrink:0;">⚠ URGENT</span>
+                <span id="ann-preview-text" style="opacity:0.9;"></span>
+              </div>
+            </div>
+
+            <!-- SAVE BUTTON — big, bottom, unmissable -->
+            <div style="margin-top:24px;padding-top:20px;border-top:1px solid #E5E7EB;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+              <p style="font-size:0.82rem;color:#6B7280;margin:0;">
+                <i class="fa-solid fa-circle-info" style="color:#C8A45D;margin-right:5px;"></i>
+                Changes are applied to the homepage within ~3 seconds of saving.
+              </p>
+              <button class="btn btn-gold" id="btn-save-ann" style="padding:12px 32px;font-size:0.95rem;">
+                <i class="fa-solid fa-floppy-disk"></i>&nbsp; Save &amp; Apply to Homepage
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ==========================================
+           PANEL: Settings
+      ========================================== -->
+      <div class="panel" id="panel-settings">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;" class="dash-split">
+
+          <div class="section-card">
+            <div class="section-card-header">
+              <div class="section-card-title"><i class="fa-solid fa-shield-halved"></i> Administrator Credentials</div>
+            </div>
+            <div class="section-card-body settings-form">
+              <div class="form-group">
+                <label>Admin Username</label>
+                <input type="text" id="set-admin-user" autocomplete="off">
+                <p class="hint">Change your login username.</p>
+              </div>
+              <div class="form-group">
+                <label>Admin Password</label>
+                <input type="text" id="set-admin-pass" autocomplete="off">
+                <p class="hint">Use a strong password. Changes take effect on next login.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-card-header">
+              <div class="section-card-title"><i class="fa-solid fa-pen-to-square"></i> Homepage Section Labels</div>
+            </div>
+            <div class="section-card-body settings-form">
+              <div class="form-group">
+                <label>Section Title</label>
+                <input type="text" id="set-req-title">
+              </div>
+              <div class="form-group">
+                <label>Section Subtitle</label>
+                <textarea id="set-req-subtitle" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Contact Email (shown in apply modal)</label>
+                <input type="email" id="set-contact-email">
+              </div>
+              <div class="form-group">
+                <label>Contact Phone (WhatsApp link)</label>
+                <input type="tel" id="set-contact-phone">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="section-card-title"><i class="fa-solid fa-database"></i> Data Backup & Management</div>
+            <button class="btn btn-gold" id="btn-save-settings">
+              <i class="fa-solid fa-floppy-disk"></i> Save All Settings
+            </button>
+          </div>
+          <div class="section-card-body">
+            <div style="display:flex;gap:14px;flex-wrap:wrap;">
+              <button class="btn btn-primary" id="btn-export-data">
+                <i class="fa-solid fa-file-arrow-down"></i> Export Full Backup (JSON)
+              </button>
+              <button class="btn btn-ghost" id="btn-import-trigger">
+                <i class="fa-solid fa-file-arrow-up"></i> Import Backup (JSON)
+              </button>
+              <input type="file" id="import-file" accept=".json" style="display:none;">
+              <button class="btn btn-danger" id="btn-reset-data">
+                <i class="fa-solid fa-rotate-left"></i> Reset All Data
+              </button>
+            </div>
+            <p style="margin-top:14px;font-size:0.8rem;color:#6B7280;">Export creates a complete JSON backup of all requirements, applications, and settings. Import will merge/replace the current data. Reset restores factory defaults.</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /page-content -->
+  </div><!-- /main-content -->
+</div><!-- /admin-app -->
+
+
+<!-- ==========================================
+     MODAL: Add / Edit Requirement
+========================================== -->
+<div class="admin-modal-overlay" id="req-modal">
+  <div class="admin-modal">
+    <div class="admin-modal-header">
+      <h3 id="req-modal-title">Add Requirement</h3>
+      <button class="modal-close" id="close-req-modal"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="admin-modal-body">
+      <form id="req-form" autocomplete="off">
+        <div class="form-group-admin">
+          <label>Position / Requirement Title *</label>
+          <input type="text" id="req-title" placeholder="e.g. Senior Tunnel Civil Engineer">
+        </div>
+        <div class="form-row">
+          <div class="form-group-admin">
+            <label>Category *</label>
+            <select id="req-category">
+              <option value="">— Select Category —</option>
+              <option value="metro">Metro & Tunneling</option>
+              <option value="highway">Highway & Bridge</option>
+              <option value="aviation">Aviation</option>
+              <option value="machinery">Heavy Machinery</option>
+              <option value="procurement">Procurement / Sub-Contract</option>
+            </select>
+          </div>
+          <div class="form-group-admin">
+            <label>No. of Openings</label>
+            <input type="number" id="req-openings" min="1" value="1">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group-admin">
+            <label>Experience Required</label>
+            <input type="text" id="req-experience" placeholder="e.g. 3–5 Years, Freshers OK">
+          </div>
+          <div class="form-group-admin">
+            <label>Location / Site *</label>
+            <input type="text" id="req-location" placeholder="e.g. Pune Metro / Pan-India">
+          </div>
+        </div>
+        <div class="form-group-admin">
+          <label>Urgency Level</label>
+          <select id="req-urgency">
+            <option value="urgent">🔴 Urgent Hiring</option>
+            <option value="immediate">🟠 Immediate Requirement</option>
+            <option value="active">🟢 Active Opening</option>
+            <option value="pipeline">🔵 Future Pipeline</option>
+          </select>
+        </div>
+        <div class="form-group-admin">
+          <label>Description / Responsibilities *</label>
+          <textarea id="req-description" placeholder="Describe the role, responsibilities, and what the candidate will work on…"></textarea>
+        </div>
+        <div class="form-group-admin">
+          <label>Qualifications & Requirements</label>
+          <textarea id="req-qualifications" rows="3" placeholder="Education, certifications, mandatory experience…"></textarea>
+        </div>
+        <label class="form-check">
+          <input type="checkbox" id="req-active" checked>
+          <span>Mark as Active (show live on homepage)</span>
+        </label>
+      </form>
+    </div>
+    <div class="admin-modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('req-modal')">Cancel</button>
+      <button class="btn btn-gold" id="btn-save-req">
+        <i class="fa-solid fa-floppy-disk"></i> Save Requirement
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ==========================================
+     MODAL: Add / Edit Project (with Photo Uploads)
+========================================== -->
+<div class="admin-modal-overlay" id="proj-modal">
+  <div class="admin-modal" style="max-width: 680px;">
+    <div class="admin-modal-header">
+      <h3 id="proj-modal-title">Add New Project</h3>
+      <button class="admin-modal-close" onclick="closeModal('proj-modal')">&times;</button>
+    </div>
+    <div class="admin-modal-body">
+      <form id="proj-form" onsubmit="return false;">
+        <input type="hidden" id="proj-edit-id">
+        <div class="form-group-admin">
+          <label>Project Title *</label>
+          <input type="text" id="proj-title" placeholder="e.g. Pune Metro Underground Section">
+        </div>
+        <div class="form-row">
+          <div class="form-group-admin">
+            <label>Sector / Category *</label>
+            <select id="proj-sector">
+              <option value="metro">Metro &amp; Tunneling</option>
+              <option value="road">Road &amp; Highway</option>
+              <option value="airport">Airports</option>
+              <option value="transport">Transportation</option>
+              <option value="urban">Urban Infra</option>
+            </select>
+          </div>
+          <div class="form-group-admin">
+            <label>Status</label>
+            <select id="proj-status">
+              <option value="Completed">Completed</option>
+              <option value="In Progress">In Progress / Ongoing</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group-admin">
+            <label>Client Name</label>
+            <input type="text" id="proj-client" placeholder="e.g. Tata Projects / Afcons / NHAI">
+          </div>
+          <div class="form-group-admin">
+            <label>Location / City *</label>
+            <input type="text" id="proj-location" placeholder="e.g. Pune, Maharashtra">
+          </div>
+        </div>
+        <div class="form-group-admin">
+          <label>Project Description</label>
+          <textarea id="proj-desc" rows="3" placeholder="Brief details about the execution, scope of work, etc."></textarea>
+        </div>
+
+        <!-- Photo Upload & Gallery Manager -->
+        <div class="form-group-admin">
+          <label><i class="fa-solid fa-images" style="color:var(--admin-accent);margin-right:4px;"></i> Project Photos &amp; Gallery *</label>
+          
+          <div class="photo-upload-zone" id="photo-drop-zone">
+            <i class="fa-solid fa-cloud-arrow-up" style="font-size:2rem;color:var(--admin-accent);margin-bottom:8px;"></i>
+            <p style="font-weight:600;margin-bottom:4px;">Click to Select Photos from Device (or Drag &amp; Drop)</p>
+            <p style="font-size:0.75rem;color:var(--admin-text-muted);">Supports JPG, PNG, WebP (Automatically compressed &amp; stored to Database)</p>
+            <input type="file" id="proj-file-input" multiple accept="image/*" style="display:none;">
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <input type="text" id="proj-photo-url" placeholder="Or paste an image URL / local path…" style="font-size:0.82rem;">
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-add-photo-url" style="white-space:nowrap;">
+              <i class="fa-solid fa-plus"></i> Add URL
+            </button>
+          </div>
+
+          <!-- Uploaded Photos Previews -->
+          <div class="proj-photos-preview" id="proj-photos-preview"></div>
+        </div>
+
+        <label class="form-check" style="margin-top:16px;">
+          <input type="checkbox" id="proj-active" checked>
+          <span>Show this project live on homepage</span>
+        </label>
+      </form>
+    </div>
+    <div class="admin-modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('proj-modal')">Cancel</button>
+      <button class="btn btn-gold" id="btn-save-proj">
+        <i class="fa-solid fa-floppy-disk"></i> Save Project &amp; Photos
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Toast Notification -->
+<div id="admin-toast"></div>
+
+<!-- Time update script -->
+<script>
+  (function() {
+    function updateTime() {
+      const el = document.getElementById('header-time');
+      if (el) el.textContent = new Date().toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+    }
+    updateTime();
+    setInterval(updateTime, 60000);
+  })();
+</script>
+
+<!-- Firebase Cloud Sync SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="firebase-config.js?v=2"></script>
+
+<!-- Admin JS -->
+<script src="admin.js?v=6"></script>
+</body>
+</html>
