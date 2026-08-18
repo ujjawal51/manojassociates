@@ -1039,6 +1039,50 @@ if (form) {
         `).join('');
     }
 
+    /* ── Render Careers Contact & Direct Drop Info ── */
+    function renderCareersContact() {
+        const settings = getSettings();
+        const rawPhone = settings.careers_phone || settings.contact_phone || '+91 94150 05550';
+        const cleanPhone = rawPhone.replace(/[^\d+]/g, '');
+
+        // 1. Phone Button on Careers Page Direct Drop
+        const phoneBtn = document.getElementById('careers-phone-btn');
+        const phoneText = document.getElementById('careers-phone-text');
+        if (phoneBtn) {
+            phoneBtn.href = 'tel:' + cleanPhone;
+        }
+        if (phoneText) {
+            phoneText.textContent = rawPhone;
+        }
+
+        // 2. Email Button on Careers Page Direct Drop
+        const emailBtn = document.getElementById('careers-email-btn');
+        const hrEmail = settings.careers_email || 'chandrashukla@manojassociates.com';
+        if (emailBtn) {
+            emailBtn.href = `mailto:${hrEmail}?subject=${encodeURIComponent('Job Application - Manoj Associates')}`;
+        }
+
+        // 3. Direct Drop Title and Subtitle
+        if (settings.careers_drop_title) {
+            const dropTitle = document.getElementById('careers-drop-title');
+            if (dropTitle) dropTitle.textContent = settings.careers_drop_title;
+        }
+        if (settings.careers_drop_desc) {
+            const dropDesc = document.getElementById('careers-drop-subtitle');
+            if (dropDesc) dropDesc.textContent = settings.careers_drop_desc;
+        }
+
+        // 4. Apply Modal Email Hint
+        const applyEmailLink = document.getElementById('apply-email-link');
+        const contactEmail = settings.contact_email || hrEmail;
+        if (applyEmailLink && contactEmail) {
+            applyEmailLink.href = 'mailto:' + contactEmail;
+            applyEmailLink.textContent = contactEmail;
+        }
+    }
+
+    window.renderCareersContact = renderCareersContact;
+
     /* ── Filter pills ── */
     document.querySelectorAll('.req-pill').forEach(pill => {
         pill.addEventListener('click', () => {
@@ -1059,9 +1103,11 @@ if (form) {
 
         const settings = getSettings();
         const emailLink = document.getElementById('apply-email-link');
-        if (emailLink && settings.contact_email) {
-            emailLink.href = 'mailto:' + settings.contact_email;
-            emailLink.textContent = settings.contact_email;
+        const hrEmail = settings.careers_email || 'chandrashukla@manojassociates.com';
+        const contactEmail = settings.contact_email || hrEmail;
+        if (emailLink && contactEmail) {
+            emailLink.href = 'mailto:' + contactEmail;
+            emailLink.textContent = contactEmail;
         }
 
         // Reset to form view
@@ -1142,12 +1188,13 @@ if (form) {
     function attachCloudSync() {
         if (typeof CloudDB === 'undefined' || !CloudDB.isCloudReady()) return;
 
-        // 1. Initial Cloud Fetch for Settings (Announcement Banner)
+        // 1. Initial Cloud Fetch for Settings (Announcement Banner & Careers Contact)
         CloudDB.get(SETTINGS_KEY).then(data => {
             if (data && typeof data === 'object') {
                 localStorage.setItem(SETTINGS_KEY, JSON.stringify(data));
                 renderTicker();
                 renderCards(currentFilter);
+                renderCareersContact();
             }
         }).catch(() => {});
 
@@ -1156,6 +1203,7 @@ if (form) {
             if (data && Array.isArray(data) && data.length) {
                 localStorage.setItem(REQS_KEY, JSON.stringify(data));
                 renderCards(currentFilter);
+                renderCareersContact();
             }
         }).catch(() => {});
 
@@ -1167,6 +1215,7 @@ if (form) {
             if (list.length) {
                 localStorage.setItem(REQS_KEY, JSON.stringify(list));
                 renderCards(currentFilter);
+                renderCareersContact();
             }
         });
 
@@ -1175,6 +1224,7 @@ if (form) {
                 localStorage.setItem(SETTINGS_KEY, JSON.stringify(data));
                 renderTicker();
                 renderCards(currentFilter);
+                renderCareersContact();
             }
         });
     }
@@ -1194,6 +1244,7 @@ if (form) {
             _lastSyncStamp = newStamp;
             renderTicker();
             renderCards(currentFilter);
+            renderCareersContact();
         }
     }, 1500);
 
@@ -1203,12 +1254,14 @@ if (form) {
             _lastSyncStamp = localStorage.getItem('ma_last_updated') || '0';
             renderTicker();
             renderCards(currentFilter);
+            renderCareersContact();
         }
     });
 
     /* ── Init ── */
     renderTicker();
     renderCards('all');
+    renderCareersContact();
 
 })();
 
@@ -1345,12 +1398,13 @@ function showHpToast(msg, type) {
             }
         });
 
-        // Real-time Cloud listener for Admin Settings (Announcement Banner)
+        // Real-time Cloud listener for Admin Settings (Announcement Banner & Careers Contact)
         CloudDB.listen('ma_admin_settings', (data) => {
             if (data && typeof data === 'object') {
                 localStorage.setItem('ma_admin_settings', JSON.stringify(data));
                 if (typeof window.renderTicker === 'function') window.renderTicker();
                 if (typeof window.renderCards === 'function') window.renderCards();
+                if (typeof window.renderCareersContact === 'function') window.renderCareersContact();
             }
         });
 
@@ -1375,6 +1429,7 @@ function showHpToast(msg, type) {
             renderHomepageProjects();
             if (typeof window.renderTicker === 'function') window.renderTicker();
             if (typeof window.renderCards === 'function') window.renderCards();
+            if (typeof window.renderCareersContact === 'function') window.renderCareersContact();
         }
     }, 1500);
 
@@ -1384,6 +1439,7 @@ function showHpToast(msg, type) {
             renderHomepageProjects();
             if (typeof window.renderTicker === 'function') window.renderTicker();
             if (typeof window.renderCards === 'function') window.renderCards();
+            if (typeof window.renderCareersContact === 'function') window.renderCareersContact();
         }
     });
 

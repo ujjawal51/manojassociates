@@ -237,6 +237,10 @@ function defaultSettings() {
     req_section_subtitle: 'Join India\'s premier infrastructure contractor. We are actively hiring skilled engineers, supervisors, surveyors, and operators for live metro, highway, and airport projects.',
     contact_email: 'manojdwivedi@manojassociates.com',
     contact_phone: '9415005550',
+    careers_phone: '+91 94150 05550',
+    careers_email: 'chandrashukla@manojassociates.com',
+    careers_drop_title: "Don't see a matching position?",
+    careers_drop_desc: "We are always eager to meet talented civil engineers, project managers, and heavy equipment specialists. Send your CV directly to our HR team.",
   };
 }
 
@@ -788,29 +792,78 @@ function saveAnnouncer() {
 }
 
 /* ==========================================
-   SETTINGS PANEL
+   SETTINGS PANEL & CAREERS CONTACT
 ========================================== */
+function updateCareersPreview() {
+  const phoneVal = document.getElementById('set-careers-phone')?.value.trim() || '+91 94150 05550';
+  const titleVal = document.getElementById('set-careers-drop-title')?.value.trim() || "Don't see a matching position?";
+  const descVal = document.getElementById('set-careers-drop-desc')?.value.trim() || "We are always eager to meet talented civil engineers, project managers, and heavy equipment specialists. Send your CV directly to our HR team.";
+
+  const prevPhoneVal = document.getElementById('prev-phone-val');
+  const prevTitle = document.getElementById('prev-drop-title');
+  const prevDesc = document.getElementById('prev-drop-desc');
+
+  if (prevPhoneVal) prevPhoneVal.textContent = phoneVal;
+  if (prevTitle) prevTitle.textContent = titleVal;
+  if (prevDesc) prevDesc.textContent = descVal;
+}
+
 function renderSettings() {
   const s = DB.getSettings();
-  document.getElementById('set-admin-user').value         = s.admin_user;
-  document.getElementById('set-admin-pass').value         = s.admin_pass;
-  document.getElementById('set-req-title').value          = s.req_section_title;
-  document.getElementById('set-req-subtitle').value       = s.req_section_subtitle;
-  document.getElementById('set-contact-email').value      = s.contact_email;
-  document.getElementById('set-contact-phone').value      = s.contact_phone;
+  if (document.getElementById('set-admin-user'))       document.getElementById('set-admin-user').value       = s.admin_user || 'admin';
+  if (document.getElementById('set-admin-pass'))       document.getElementById('set-admin-pass').value       = s.admin_pass || 'admin123';
+  if (document.getElementById('set-req-title'))        document.getElementById('set-req-title').value        = s.req_section_title || '';
+  if (document.getElementById('set-req-subtitle'))     document.getElementById('set-req-subtitle').value     = s.req_section_subtitle || '';
+  if (document.getElementById('set-contact-email'))    document.getElementById('set-contact-email').value    = s.contact_email || '';
+  if (document.getElementById('set-contact-phone'))    document.getElementById('set-contact-phone').value    = s.contact_phone || '9415005550';
+
+  // Careers Specific Fields
+  const careersPhoneEl = document.getElementById('set-careers-phone');
+  if (careersPhoneEl) careersPhoneEl.value = s.careers_phone || s.contact_phone || '+91 94150 05550';
+
+  const careersEmailEl = document.getElementById('set-careers-email');
+  if (careersEmailEl) careersEmailEl.value = s.careers_email || 'chandrashukla@manojassociates.com';
+
+  const careersTitleEl = document.getElementById('set-careers-drop-title');
+  if (careersTitleEl) careersTitleEl.value = s.careers_drop_title || "Don't see a matching position?";
+
+  const careersDescEl = document.getElementById('set-careers-drop-desc');
+  if (careersDescEl) careersDescEl.value = s.careers_drop_desc || "We are always eager to meet talented civil engineers, project managers, and heavy equipment specialists. Send your CV directly to our HR team.";
+
+  updateCareersPreview();
 }
 
 function saveSettings() {
   const s = DB.getSettings();
-  s.admin_user         = document.getElementById('set-admin-user').value.trim() || s.admin_user;
-  s.admin_pass         = document.getElementById('set-admin-pass').value.trim() || s.admin_pass;
-  s.req_section_title  = document.getElementById('set-req-title').value.trim();
-  s.req_section_subtitle = document.getElementById('set-req-subtitle').value.trim();
-  s.contact_email      = document.getElementById('set-contact-email').value.trim();
-  s.contact_phone      = document.getElementById('set-contact-phone').value.trim();
+  s.admin_user         = document.getElementById('set-admin-user')?.value.trim() || s.admin_user;
+  s.admin_pass         = document.getElementById('set-admin-pass')?.value.trim() || s.admin_pass;
+  s.req_section_title  = document.getElementById('set-req-title')?.value.trim() || '';
+  s.req_section_subtitle = document.getElementById('set-req-subtitle')?.value.trim() || '';
+  s.contact_email      = document.getElementById('set-contact-email')?.value.trim() || '';
+  s.contact_phone      = document.getElementById('set-contact-phone')?.value.trim() || '';
+
+  // Careers Specific Fields
+  const careersPhoneInput = document.getElementById('set-careers-phone');
+  if (careersPhoneInput) {
+    s.careers_phone = careersPhoneInput.value.trim() || '+91 94150 05550';
+  }
+  const careersEmailInput = document.getElementById('set-careers-email');
+  if (careersEmailInput) {
+    s.careers_email = careersEmailInput.value.trim() || 'chandrashukla@manojassociates.com';
+  }
+  const careersTitleInput = document.getElementById('set-careers-drop-title');
+  if (careersTitleInput) {
+    s.careers_drop_title = careersTitleInput.value.trim() || "Don't see a matching position?";
+  }
+  const careersDescInput = document.getElementById('set-careers-drop-desc');
+  if (careersDescInput) {
+    s.careers_drop_desc = careersDescInput.value.trim();
+  }
+
   DB.setSettings(s);
   syncHomepageAnnouncer();
-  toast('Settings saved successfully!');
+  updateCareersPreview();
+  toast('Settings & Careers Phone Number saved successfully!', 'success');
 }
 
 function exportData() {
@@ -1299,10 +1352,26 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('import-file').addEventListener('change', importData);
   document.getElementById('btn-reset-data').addEventListener('click', resetData);
 
+  /* Careers Live Preview Input Listeners */
+  document.getElementById('set-careers-phone')?.addEventListener('input', updateCareersPreview);
+  document.getElementById('set-careers-email')?.addEventListener('input', updateCareersPreview);
+  document.getElementById('set-careers-drop-title')?.addEventListener('input', updateCareersPreview);
+  document.getElementById('set-careers-drop-desc')?.addEventListener('input', updateCareersPreview);
+
   /* ── Quick action buttons ── */
   document.getElementById('qa-add-req')?.addEventListener('click', () => { switchPanel('requirements'); setTimeout(openAddModal, 100); });
   document.getElementById('qa-announcer')?.addEventListener('click', () => switchPanel('announcer'));
   document.getElementById('qa-apps')?.addEventListener('click', () => switchPanel('applications'));
+  document.getElementById('qa-careers-phone')?.addEventListener('click', () => {
+    switchPanel('settings');
+    setTimeout(() => {
+      const el = document.getElementById('set-careers-phone');
+      if (el) {
+        el.focus();
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 120);
+  });
   document.getElementById('qa-settings')?.addEventListener('click', () => switchPanel('settings'));
   document.getElementById('qa-homepage')?.addEventListener('click', () => window.open('index.html', '_blank'));
 

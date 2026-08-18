@@ -1016,6 +1016,48 @@ table.admin-table {
 .settings-form textarea:focus { outline: none; border-color: var(--admin-accent); }
 .settings-form .hint { font-size: 0.75rem; color: var(--admin-text-muted); margin-top: 4px; }
 
+/* Careers Admin Preview Box */
+.careers-admin-preview-wrap {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--admin-border);
+}
+.careers-admin-preview-box {
+  background: #0d1e38;
+  border: 1px solid rgba(200, 164, 93, 0.35);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+.preview-btn-email {
+  background: #C8A45D;
+  color: #0b192c;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+}
+.preview-btn-phone {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
 /* ==========================================
    MODAL (Add / Edit Requirement)
 ========================================== */

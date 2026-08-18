@@ -195,6 +195,9 @@
                 <button class="quick-action-btn" id="qa-apps">
                   <i class="fa-solid fa-file-lines"></i> View Applications
                 </button>
+                <button class="quick-action-btn" id="qa-careers-phone" style="border-color:rgba(200,164,93,0.35);">
+                  <i class="fa-solid fa-phone" style="color:var(--admin-accent);"></i> Careers Phone
+                </button>
                 <button class="quick-action-btn" id="qa-settings">
                   <i class="fa-solid fa-gear"></i> Settings
                 </button>
@@ -408,51 +411,107 @@
       <div class="panel" id="panel-settings">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;" class="dash-split">
 
-          <div class="section-card">
-            <div class="section-card-header">
-              <div class="section-card-title"><i class="fa-solid fa-shield-halved"></i> Administrator Credentials</div>
-            </div>
-            <div class="section-card-body settings-form">
-              <div class="form-group">
-                <label>Admin Username</label>
-                <input type="text" id="set-admin-user" autocomplete="off">
-                <p class="hint">Change your login username.</p>
+          <!-- Left Column -->
+          <div style="display:flex;flex-direction:column;gap:24px;">
+
+            <!-- Administrator Credentials -->
+            <div class="section-card">
+              <div class="section-card-header">
+                <div class="section-card-title"><i class="fa-solid fa-shield-halved"></i> Administrator Credentials</div>
               </div>
-              <div class="form-group">
-                <label>Admin Password</label>
-                <input type="text" id="set-admin-pass" autocomplete="off">
-                <p class="hint">Use a strong password. Changes take effect on next login.</p>
+              <div class="section-card-body settings-form">
+                <div class="form-group">
+                  <label>Admin Username</label>
+                  <input type="text" id="set-admin-user" autocomplete="off">
+                  <p class="hint">Change your login username.</p>
+                </div>
+                <div class="form-group">
+                  <label>Admin Password</label>
+                  <input type="text" id="set-admin-pass" autocomplete="off">
+                  <p class="hint">Use a strong password. Changes take effect on next login.</p>
+                </div>
               </div>
             </div>
+
+            <!-- Homepage Section Labels -->
+            <div class="section-card">
+              <div class="section-card-header">
+                <div class="section-card-title"><i class="fa-solid fa-pen-to-square"></i> Homepage Section Labels</div>
+              </div>
+              <div class="section-card-body settings-form">
+                <div class="form-group">
+                  <label>Section Title</label>
+                  <input type="text" id="set-req-title">
+                </div>
+                <div class="form-group">
+                  <label>Section Subtitle</label>
+                  <textarea id="set-req-subtitle" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Contact Email (shown in apply modal)</label>
+                  <input type="email" id="set-contact-email">
+                </div>
+                <div class="form-group">
+                  <label>General Contact Phone (WhatsApp link)</label>
+                  <input type="tel" id="set-contact-phone">
+                </div>
+              </div>
+            </div>
+
           </div>
 
-          <div class="section-card">
-            <div class="section-card-header">
-              <div class="section-card-title"><i class="fa-solid fa-pen-to-square"></i> Homepage Section Labels</div>
+          <!-- Right Column: Dedicated Careers Page & HR Contact Settings -->
+          <div style="display:flex;flex-direction:column;gap:24px;">
+
+            <div class="section-card" style="border:1px solid rgba(200, 164, 93, 0.4);">
+              <div class="section-card-header" style="background:linear-gradient(90deg, rgba(200, 164, 93, 0.12), transparent);">
+                <div class="section-card-title" style="color:var(--admin-accent);"><i class="fa-solid fa-user-tie"></i> Careers Page &amp; HR Contact Settings</div>
+              </div>
+              <div class="section-card-body settings-form">
+                <div class="form-group">
+                  <label style="color:var(--admin-accent);"><i class="fa-solid fa-phone" style="margin-right:6px;"></i> Careers Contact Phone Number *</label>
+                  <input type="tel" id="set-careers-phone" placeholder="+91 94150 05550" style="border-color:rgba(200, 164, 93, 0.5);font-weight:600;">
+                  <p class="hint">This phone number is displayed on the Careers page <strong>"Don't see a matching position?"</strong> button and directly connects callers to your HR team.</p>
+                </div>
+                <div class="form-group">
+                  <label><i class="fa-solid fa-envelope" style="color:var(--admin-accent);margin-right:6px;"></i> Careers HR Email Address</label>
+                  <input type="email" id="set-careers-email" placeholder="chandrashukla@manojassociates.com">
+                  <p class="hint">Direct resume recipient email for the <strong>"Email Your CV"</strong> button.</p>
+                </div>
+                <div class="form-group">
+                  <label>Direct Drop Box Title</label>
+                  <input type="text" id="set-careers-drop-title" placeholder="Don't see a matching position?">
+                </div>
+                <div class="form-group">
+                  <label>Direct Drop Box Subtitle / Description</label>
+                  <textarea id="set-careers-drop-desc" rows="3" placeholder="We are always eager to meet talented civil engineers, project managers, and heavy equipment specialists. Send your CV directly to our HR team."></textarea>
+                </div>
+
+                <!-- Live Interactive Preview in Admin -->
+                <div class="careers-admin-preview-wrap">
+                  <div style="font-size:0.78rem;font-weight:700;letter-spacing:0.5px;color:var(--admin-accent);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+                    <i class="fa-solid fa-eye"></i> Live Careers Page Box Preview
+                  </div>
+                  <div class="careers-admin-preview-box" id="careers-admin-preview">
+                    <div>
+                      <h4 id="prev-drop-title" style="color:#ffffff;margin:0 0 4px;font-size:0.95rem;font-weight:700;">Don't see a matching position?</h4>
+                      <p id="prev-drop-desc" style="color:rgba(255,255,255,0.75);font-size:0.78rem;margin:0 0 12px;line-height:1.4;">We are always eager to meet talented civil engineers, project managers, and heavy equipment specialists. Send your CV directly to our HR team.</p>
+                    </div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+                      <span class="preview-btn-email"><i class="fa-solid fa-envelope"></i> Email Your CV</span>
+                      <span class="preview-btn-phone" id="prev-phone-btn"><i class="fa-solid fa-phone"></i> <span id="prev-phone-val">+91 94150 05550</span></span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
             </div>
-            <div class="section-card-body settings-form">
-              <div class="form-group">
-                <label>Section Title</label>
-                <input type="text" id="set-req-title">
-              </div>
-              <div class="form-group">
-                <label>Section Subtitle</label>
-                <textarea id="set-req-subtitle" rows="3"></textarea>
-              </div>
-              <div class="form-group">
-                <label>Contact Email (shown in apply modal)</label>
-                <input type="email" id="set-contact-email">
-              </div>
-              <div class="form-group">
-                <label>Contact Phone (WhatsApp link)</label>
-                <input type="tel" id="set-contact-phone">
-              </div>
-            </div>
+
           </div>
 
         </div>
 
-        <div class="section-card">
+        <div class="section-card" style="margin-top:24px;">
           <div class="section-card-header">
             <div class="section-card-title"><i class="fa-solid fa-database"></i> Data Backup & Management</div>
             <button class="btn btn-gold" id="btn-save-settings">
